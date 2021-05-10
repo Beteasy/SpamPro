@@ -1,58 +1,98 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
-    <script src="../static/assets/js/echarts.js"></script>
+    <!--    <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>-->
+    <script src="http://www.jq22.com/jquery/jquery-1.10.2.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/echarts/5.1.0/echarts.js"></script>
 </head>
-<body>
+<body th:fragment="echart">
 <!--			柱状图-->
-<div class="row" id="main"></div>
+<div id="main" style="width: 600px;height:600px;"></div>
 <script type="text/javascript">
     $(function (){
-        // import * as echarts from 'echarts';
-        //
-        // var app = {};
-        //
-        // var chartDom = document.getElementById('main');
-        // var myChart = echarts.init(chartDom);
-        // var option;
-
         $.ajax({
-            url:"#",
+            url:"/evaluation",
             type:"GET",
-            success:function (){
+            success:function (data){
+                var dataArr = new Array();
+                dataArr.push(['id', 'accuracy', 'precision', 'recall']);
+                for (let dataKey in data) {
+                    console.log(data[dataKey].id)
+                    var tmp = [data[dataKey].id,data[dataKey].accuracy,data[dataKey].pre,data[dataKey].recall];
+                    dataArr.push(tmp);
+                }
+                console.log(dataArr)
                 var myChart = echarts.init(document.getElementById('main'));
                 var option = {
                     legend: {},
                     tooltip: {},
                     dataset: {
-                        dimensions: ['product', '2015', '2016', '2017'],
-                        source: [
-                            {product: 'Matcha Latte', '2015': 43.3, '2016': 85.8, '2017': 93.7},
-                            {product: 'Milk Tea', '2015': 83.1, '2016': 73.4, '2017': 55.1},
-                            {product: 'Cheese Cocoa', '2015': 86.4, '2016': 65.2, '2017': 82.5},
-                            {product: 'Walnut Brownie', '2015': 72.4, '2016': 53.9, '2017': 39.1}
-                        ]
+                        source: dataArr
                     },
-                    xAxis: {type: 'category'},
+                    xAxis: [{
+                        type: 'category',
+                        axisLabel:{
+                            interval:0
+                        }
+                    }],
+
                     yAxis: {},
                     // Declare several bar series, each will be mapped
                     // to a column of dataset.source by default.
                     series: [
-                        {type: 'bar'},
-                        {type: 'bar'},
-                        {type: 'bar'}
+                        {
+                            type: 'bar',
+                            itemStyle: {
+                                normal: {
+                                    label: {
+                                        show: true, //开启显示
+                                        position: 'top', //在上方显示
+                                        textStyle: { //数值样式
+                                            color: 'black',
+                                            fontSize: 16
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            type: 'bar',
+                            itemStyle: {
+                                normal: {
+                                    label: {
+                                        show: true, //开启显示
+                                        position: 'top', //在上方显示
+                                        textStyle: { //数值样式
+                                            color: 'black',
+                                            fontSize: 16
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            type: 'bar',
+                            itemStyle: {
+                                normal: {
+                                    label: {
+                                        show: true, //开启显示
+                                        position: 'top', //在上方显示
+                                        textStyle: { //数值样式
+                                            color: 'black',
+                                            fontSize: 16
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     ]
                 };
-                myChart.setOption(option);
+                option && myChart.setOption(option);
+
             }
         })
-
-
-
-
     })
 </script>
 </body>

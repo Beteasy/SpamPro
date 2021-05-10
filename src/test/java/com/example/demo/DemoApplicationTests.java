@@ -1,7 +1,7 @@
 package com.example.demo;
 
 import com.example.demo.mapper.EvaluationMapper;
-import com.example.demo.vo.Evaluation;
+import com.example.demo.pojo.Evaluation;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

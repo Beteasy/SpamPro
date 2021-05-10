@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta name="description" content="Xenon Boostrap Admin Panel" />
+	<meta name="author" content="" />
+	
+	<title>Xenon - Dashboard</title>
+
+	<div th:replace="common/common :: commonHeader"></div>
+	<script src="https://cdn.bootcdn.net/ajax/libs/echarts/5.1.0/echarts.js"></script>
+
+	
+</head>
+<body class="page-body">
+
+
+
+	<div class="page-container"><!-- add class "sidebar-collapsed" to close sidebar by default, "chat-visible" to make chat appear always -->
+
+		<!-- Add "fixed" class to make the sidebar fixed always to the browser viewport. -->
+		<!-- Adding class "toggle-others" will keep only one menu item open at a time. -->
+		<!-- Adding class "collapsed" collapse sidebar root elements and show only icons. -->
+		<div th:replace="common/common :: sidebar-menu"></div>
+
+		<div class="main-content">
+			<div th:replace="common/common :: user-info-navbar"></div>
+
+<!--			获取model中的数据-->
+<!--			<input type="hidden" th:value="${evaluations}" id="evaluations"></input>-->
+<!--			<div class="panel panel-default">-->
+<!--				<div class="panel-heading">-->
+<!--					<h3 class="panel-title">Grouped Bars</h3>-->
+<!--					<div class="panel-options">-->
+<!--						<a href="#" data-toggle="panel">-->
+<!--							<span class="collapse-icon">&ndash;</span>-->
+<!--							<span class="expand-icon">+</span>-->
+<!--						</a>-->
+<!--						<a href="#" data-toggle="remove">-->
+<!--							&times;-->
+<!--						</a>-->
+<!--					</div>-->
+<!--				</div>-->
+<!--				<div class="panel-body">-->
+<!--					<script type="text/javascript">-->
+<!--						jQuery(document).ready(function($)-->
+<!--						{-->
+<!--							// var evaluations = $("#evaluations");-->
+<!--							// // console.log(evaluations);-->
+<!--							// // console.log(evaluations[1]);-->
+<!--							// console.log(evaluations)-->
+<!--							// var evaluations = sessionStorage.getItem("evaluations");-->
+<!--							// console.log(evaluations);-->
+
+
+<!--							var dataSource = [-->
+<!--								{ id: "TFIDFWithNB", accuracy: 92.0, precision: 89.0, recall: 95.0 },-->
+<!--								{ id: "TFIDFWithSVMWithSGD", accuracy: 94.0, precision: 91.0, recall: 96.0 },-->
+<!--								{ id: "TFWithNB", accuracy: 92.0, precision: 88.0, recall: 96.0 },-->
+<!--								// { model: "Iran", oil: 5.3, gas: 4.39 },-->
+<!--								// { model: "Canada", oil: 4.08, gas: 5.4 },-->
+<!--								// { model: "Saudi Arabia", oil: 12.03 },-->
+<!--								// { model: "Mexico", oil: 3.86 }-->
+<!--							];-->
+
+<!--							$("#bar-2").dxChart({-->
+<!--								equalBarWidth: false,-->
+<!--								dataSource: dataSource,-->
+<!--								commonSeriesSettings: {-->
+<!--									argumentField: "id",-->
+<!--									type: "bar"-->
+<!--								},-->
+<!--								series: [-->
+<!--									{ valueField: "accuracy", name: "accuracy", color: "#0e62c7" },-->
+<!--									{ valueField: "precision", name: "precisionn", color: "#2c2e2f" },-->
+<!--									{ valueField: "recall", name: "recall", color: "#7c38bc" }-->
+<!--								],-->
+<!--								legend: {-->
+<!--									verticalAlignment: "bottom",-->
+<!--									horizontalAlignment: "center"-->
+<!--								},-->
+<!--								title: "模型评估指标"-->
+<!--							});-->
+<!--						});-->
+<!--					</script>-->
+<!--					<div id="bar-2" style="height: 400px; width: 100%;"></div>-->
+<!--				</div>-->
+<!--			</div>-->
+<!--			<div th:replace="charttest :: echart"></div>-->
+			<iframe th:src="@{/echart}" style="width: 700px; height: 700px" frameborder="0"></iframe>
+<!--			<div style="width: 500px;height: 500px" id="bar">111</div>-->
+
+
+<!--			柱状图-->
+<!--			<div  id="main" style="width: 900px;height:600px; background-color: red">11</div>-->
+<!--			<script type="text/javascript">-->
+<!--				var chartDom = document.getElementById('bar');-->
+<!--				var myChart = echarts.init(chartDom);-->
+<!--				var option;-->
+
+<!--				option = {-->
+<!--					legend: {},-->
+<!--					tooltip: {},-->
+<!--					dataset: {-->
+<!--						source: [-->
+<!--							['product', '2015', '2016', '2017'],-->
+<!--							['Matcha Latte', 43.3, 85.8, 93.7],-->
+<!--							['Milk Tea', 83.1, 73.4, 55.1],-->
+<!--							['Cheese Cocoa', 86.4, 65.2, 82.5],-->
+<!--							['Walnut Brownie', 72.4, 53.9, 39.1]-->
+<!--						]-->
+<!--					},-->
+<!--					xAxis: {type: 'category'},-->
+<!--					yAxis: {},-->
+<!--					// Declare several bar series, each will be mapped-->
+<!--					// to a column of dataset.source by default.-->
+<!--					series: [-->
+<!--						{type: 'bar'},-->
+<!--						{type: 'bar'},-->
+<!--						{type: 'bar'}-->
+<!--					]-->
+<!--				};-->
+<!--				option && myChart.setOption(option);-->
+<!--			</script>-->
+
+			<!-- Main Footer -->
+			<!-- Choose between footer styles: "footer-type-1" or "footer-type-2" -->
+			<!-- Add class "sticky" to  always stick the footer to the end of page (if page contents is small) -->
+			<!-- Or class "fixed" to  always fix the footer to the end of page -->
+			<footer class="main-footer sticky footer-type-1">
+
+				<div class="footer-inner">
+
+					<!-- Add your copyright text here -->
+					<div class="footer-text">
+						&copy; 2014
+						<strong>Xenon</strong>
+						theme by <a href="http://laborator.co" target="_blank">Laborator</a>
+					</div>
+
+
+					<!-- Go to Top Link, just add rel="go-top" to any link to add this functionality -->
+					<div class="go-up">
+
+						<a href="#" rel="go-top">
+							<i class="fa-angle-up"></i>
+						</a>
+
+					</div>
+
+				</div>
+
+			</footer>
+		</div>
+
+	</div>
+
+
+	<div class="page-loading-overlay">
+		<div class="loader-2"></div>
+	</div>
+	
+
+
+
+	<!-- Bottom Scripts -->
+	<div th:replace="common/common :: commonScript"></div>
+
+
+	<!-- Imported scripts on this page -->
+	<script th:src="@{/assets/js/xenon-widgets.js}"></script>
+	<script th:src="@{/assets/js/devexpress-web-14.1/js/globalize.min.js}"></script>
+	<script th:src="@{/assets/js/devexpress-web-14.1/js/dx.chartjs.js}"></script>
+	<script th:src="@{/assets/js/toastr/toastr.min.js}"></script>
+
+</body>
+</html>

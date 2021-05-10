@@ -1,26 +1,21 @@
-package com.example.demo.service.impl;
+package com.example.demo.extend.frequency;
 
 import com.example.demo.utils.HanlpProcess;
+import com.example.demo.utils.MyTFIDF;
 import com.example.demo.utils.ProcessFile;
 import com.example.demo.utils.RemoveStopWords;
 import org.apache.spark.SparkConf;
-import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
-import org.apache.spark.api.java.function.Function;
-import org.apache.spark.api.java.function.Function2;
-import org.apache.spark.api.java.function.PairFunction;
 import org.apache.spark.mllib.classification.NaiveBayes;
 import org.apache.spark.mllib.classification.NaiveBayesModel;
 import org.apache.spark.mllib.linalg.Vectors;
 import org.apache.spark.mllib.regression.LabeledPoint;
 import org.apache.spark.rdd.RDD;
-import scala.Tuple2;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @ClassName Excutor
@@ -28,7 +23,7 @@ import java.util.Map;
  * @Author 21971
  * @Date 2021/1/30 15:33
  */
-public class SpamTrain {
+public class MySpamTrain_Frequency {
     //the path of index file
     //fowling two paths need to be modified if run on linux
     public static final String FULL_PATH = "E:\\FinalProject\\datasets\\trec06c\\full\\index_train";
@@ -39,13 +34,12 @@ public class SpamTrain {
     public static final Integer SPAM_NUM_TRAIN = 3000;
     //the number of ham used for training
     public static final Integer HAM_NUM_TRAIN = 3000;
-
-
-
-
+    public static final Integer FEATURE_NUM = 100;
 
 
     public static void main(String[] args) {
+
+
         ArrayList<String> spamMailList  = new ArrayList<>();
         ArrayList<String> hamMailList   = new ArrayList<>();
         SparkConf conf = new SparkConf().setMaster("local[*]").setAppName("spam");
@@ -70,13 +64,8 @@ public class SpamTrain {
                 path = key.replace("..",DATA_PRE_PATH);
                 //remove this sentence when run on linux
                 path = path.replace("/", "\\");
-//                System.out.println(path);
                 String mail = null;
                 mail = ProcessFile.readFile(path);
-                //去掉所有空格和换行------------在processFile中去掉了，这里不用管了
-//                mail.replaceAll(" ","");
-//                mail.replaceAll("\n","");
-//                System.out.println("去掉空格后的字符串：\n"+mail);
                 spamMailList.add(mail);
             }
             if(value.equals("ham") && (hamNum++)<HAM_NUM_TRAIN) {
@@ -84,39 +73,18 @@ public class SpamTrain {
                 path = key.replace("..",DATA_PRE_PATH);
                 //remove this sentence when run on linux
                 path = path.replace("/", "\\");
-//                System.out.println(path);
                 String mail = null;
                 mail = ProcessFile.readFile(path);
                 hamMailList.add(mail);
 
             }
         }
-        //这里检查前面去除空格没问题
-//        System.out.println(spamMailList);
-//        System.out.println(hamMailList);
-
-        /*****************split words*******************************/
-//        for (String mail:spamMailList){
-//
-//            wordsList = HanlpProcess.cutWords(mail);
-//        }
-        /********************配套旧版分词************************/
-//        ArrayList<String> spamWordsList = new ArrayList<>();
-//        ArrayList<String> hamWordsList = new ArrayList<>();
         System.out.println("**********************正在分词********************");
         ArrayList<ArrayList<String>> spamWordsList = new ArrayList<ArrayList<String>>();
         ArrayList<ArrayList<String>> hamWordsList = new ArrayList<ArrayList<String>>();
         spamWordsList = HanlpProcess.cutWords(spamMailList);
-//        System.out.println(spamWordsList.contains("推广"));
         hamWordsList = HanlpProcess.cutWords(hamMailList);
-//        System.out.println("####################split words################################");
-//        for (ArrayList<String> list:spamWordsList){
-//            System.out.println(list);
-//        }
-//        for (ArrayList<String> list:hamWordsList){
-//            System.out.println(list);
-//        }
-//        System.out.println(hamWordsList);
+
 
 
 
@@ -139,8 +107,8 @@ public class SpamTrain {
 
         // 对分词列表进行词频统计获取TOP100数据
         System.out.println("**********************获取TOP100********************");
-        List<String> spamTop100 = getTop100(keySpamWords, jsc);
-        List<String> hamTop100 = getTop100(keyHamWords, jsc);
+        List<String> spamTop100 = getTop100(keySpamWords);
+        List<String> hamTop100 = getTop100(keyHamWords);
         /*****************************************************/
 //        System.out.println("/*******************top100**********************************/");
 //        System.out.println("spamTop100"+spamTop100);
@@ -205,75 +173,96 @@ public class SpamTrain {
     }
 
     /*****************get Top100 keywords******************************/
-    public static List<String> getTop100(ArrayList<ArrayList<String>> keywordList, JavaSparkContext jsc){
-        //获取top15
-        ArrayList<List<Tuple2<String,Integer>>> top15List = new ArrayList<List<Tuple2<String,Integer>>>();
-        for (ArrayList<String> s: keywordList){
-            //将email分词列表转化为javaRDD
-            JavaRDD<String> emailRDD = jsc.parallelize(s);
-            //映射为元组
-            //聚合
-            //降序排列
-            //获取top15热词列表
-            List<Tuple2<String, Integer>> metaList  = emailRDD.mapToPair(new PairFunction<String, String, Integer>() {
-                @Override
-                public Tuple2<String, Integer> call(String s) throws Exception {
-                    return new Tuple2<String,Integer>(s,1);
-                }
-            }).reduceByKey(new Function2<Integer, Integer, Integer>() {
-                @Override
-                public Integer call(Integer integer, Integer integer2) throws Exception {
-                    return integer+integer2;
-                }
-            }).mapToPair(new PairFunction<Tuple2<String, Integer>, Integer, String>() {
-                @Override
-                public Tuple2<Integer, String> call(Tuple2<String, Integer> stringIntegerTuple2) throws Exception {
-                    return new Tuple2<Integer,String>(stringIntegerTuple2._2(),stringIntegerTuple2._1());
-                }
-            }).sortByKey(false).mapToPair(new PairFunction<Tuple2<Integer, String>, String, Integer>() {
-                @Override
-                public Tuple2<String, Integer> call(Tuple2<Integer, String> integerStringTuple2) throws Exception {
-                    return new Tuple2<String,Integer>(integerStringTuple2._2(), integerStringTuple2._1());
-                }
-            }).take(15);
-            top15List.add(metaList);
+    public static List<String> getTop100(ArrayList<ArrayList<String>> keywordList){
+        Map<String, Float> tf = MyTFIDF.tfCalculate(keywordList);
+        List<Map.Entry<String, Float>> list = new ArrayList<Map.Entry<String, Float>>(tf.entrySet());
+        Collections.sort(list, new Comparator<Map.Entry<String, Float>>() {
+            @Override
+            public int compare(Map.Entry<String, Float> o1, Map.Entry<String, Float> o2) {
+                return o2.getValue().compareTo(o1.getValue());
+            }
+        });
+        System.out.println(list);
+        List<String> listTop100 = new ArrayList<>();
+        //选100个TF最大的出来
+        for(Map.Entry<String,Float> m : list){
+//            System.out.println(m.getKey()+"="+m.getValue());
+            listTop100.add(m.getKey());
+            if (listTop100.size()==FEATURE_NUM){
+                break;
+            }
         }
-        //汇总top15为top100
-        ArrayList<Tuple2<String,Integer>> allTuple = new ArrayList<Tuple2<String,Integer>>();
-        for (List<Tuple2<String,Integer>> list1: top15List){
-            allTuple.addAll(list1);
-        }
-
-        //将所有元组列表转化为javaRDD
-        JavaRDD<Tuple2<String,Integer>> allJRDD = jsc.parallelize(allTuple);
-        // 映射
-        // 聚合
-        // 降序
-        // 获取TOP100热词列表
-        List<String> top100List = allJRDD.mapToPair(new PairFunction<Tuple2<String, Integer>, String, Integer>() {
-            @Override
-            public Tuple2<String, Integer> call(Tuple2<String, Integer> stringIntegerTuple2) throws Exception {
-                return new Tuple2<String,Integer>(stringIntegerTuple2._1(),stringIntegerTuple2._2());
-            }
-        }).reduceByKey(new Function2<Integer, Integer, Integer>() {
-            @Override
-            public Integer call(Integer integer, Integer integer2) throws Exception {
-                return integer+integer2;
-            }
-        }).mapToPair(new PairFunction<Tuple2<String, Integer>, Integer, String>() {
-            @Override
-            public Tuple2<Integer, String> call(Tuple2<String, Integer> stringIntegerTuple2) throws Exception {
-                return new Tuple2<Integer,String>(stringIntegerTuple2._2(),stringIntegerTuple2._1());
-            }
-        }).sortByKey(false).map(new Function<Tuple2<Integer, String>, String>() {
-            @Override
-            public String call(Tuple2<Integer, String> integerStringTuple2) throws Exception {
-                return integerStringTuple2._2();
-            }
-        }).take(100);
-
-        return top100List;
+        return listTop100;
     }
+//    public static List<String> getTop100(ArrayList<ArrayList<String>> keywordList, JavaSparkContext jsc){
+//        //获取top15
+//        ArrayList<List<Tuple2<String,Integer>>> top15List = new ArrayList<List<Tuple2<String,Integer>>>();
+//        for (ArrayList<String> s: keywordList){
+//            //将email分词列表转化为javaRDD
+//            JavaRDD<String> emailRDD = jsc.parallelize(s);
+//            //映射为元组
+//            //聚合
+//            //降序排列
+//            //获取top15热词列表
+//            List<Tuple2<String, Integer>> metaList  = emailRDD.mapToPair(new PairFunction<String, String, Integer>() {
+//                @Override
+//                public Tuple2<String, Integer> call(String s) throws Exception {
+//                    return new Tuple2<String,Integer>(s,1);
+//                }
+//            }).reduceByKey(new Function2<Integer, Integer, Integer>() {
+//                @Override
+//                public Integer call(Integer integer, Integer integer2) throws Exception {
+//                    return integer+integer2;
+//                }
+//            }).mapToPair(new PairFunction<Tuple2<String, Integer>, Integer, String>() {
+//                @Override
+//                public Tuple2<Integer, String> call(Tuple2<String, Integer> stringIntegerTuple2) throws Exception {
+//                    return new Tuple2<Integer,String>(stringIntegerTuple2._2(),stringIntegerTuple2._1());
+//                }
+//            }).sortByKey(false).mapToPair(new PairFunction<Tuple2<Integer, String>, String, Integer>() {
+//                @Override
+//                public Tuple2<String, Integer> call(Tuple2<Integer, String> integerStringTuple2) throws Exception {
+//                    return new Tuple2<String,Integer>(integerStringTuple2._2(), integerStringTuple2._1());
+//                }
+//            }).take(15);
+//            top15List.add(metaList);
+//        }
+//        //汇总top15为top100
+//        ArrayList<Tuple2<String,Integer>> allTuple = new ArrayList<Tuple2<String,Integer>>();
+//        for (List<Tuple2<String,Integer>> list1: top15List){
+//            allTuple.addAll(list1);
+//        }
+//
+//        //将所有元组列表转化为javaRDD
+//        JavaRDD<Tuple2<String,Integer>> allJRDD = jsc.parallelize(allTuple);
+//        // 映射
+//        // 聚合
+//        // 降序
+//        // 获取TOP100热词列表
+//        List<String> top100List = allJRDD.mapToPair(new PairFunction<Tuple2<String, Integer>, String, Integer>() {
+//            @Override
+//            public Tuple2<String, Integer> call(Tuple2<String, Integer> stringIntegerTuple2) throws Exception {
+//                return new Tuple2<String,Integer>(stringIntegerTuple2._1(),stringIntegerTuple2._2());
+//            }
+//        }).reduceByKey(new Function2<Integer, Integer, Integer>() {
+//            @Override
+//            public Integer call(Integer integer, Integer integer2) throws Exception {
+//                return integer+integer2;
+//            }
+//        }).mapToPair(new PairFunction<Tuple2<String, Integer>, Integer, String>() {
+//            @Override
+//            public Tuple2<Integer, String> call(Tuple2<String, Integer> stringIntegerTuple2) throws Exception {
+//                return new Tuple2<Integer,String>(stringIntegerTuple2._2(),stringIntegerTuple2._1());
+//            }
+//        }).sortByKey(false).map(new Function<Tuple2<Integer, String>, String>() {
+//            @Override
+//            public String call(Tuple2<Integer, String> integerStringTuple2) throws Exception {
+//                return integerStringTuple2._2();
+//            }
+//        }).take(100);
+//
+//        return top100List;
+//    }
 
     /**
      * 通过分词列表与关键词列表获取训练映射数据

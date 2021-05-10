@@ -1,6 +1,6 @@
 package com.example.demo.controller;
 
-import com.example.demo.service.impl.SpamPredict;
+import com.example.demo.service.SpamPredict;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -16,15 +16,13 @@ public class OneMailCheckController {
     @Autowired
     SpamPredict spamPredict;
 
-    @GetMapping(value = {"/","/onemailcheck"})
+
+    @GetMapping(value = {"/mailbox-compose","/"})
     public String oneMailCheckPage(){
-        return "mailbox-compose";
+        return "mailbox/mailbox-compose";
     }
 
-    @GetMapping(value = "/test")
-    public String oneMailCheck(){
-        return "test";
-    }
+
 
     @PostMapping(value = "/docheck")
     @ResponseBody
@@ -32,6 +30,5 @@ public class OneMailCheckController {
         double result = spamPredict.textCheck(mailContent);
         System.out.println("检测结果为："+result);
         return result;
-//        return 1.0;
     }
 }

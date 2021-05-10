@@ -1,4 +1,4 @@
-package com.example.demo.vo;
+package com.example.demo.pojo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,9 +14,11 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Evaluation {
-    private String id;
+public class EvaluationFeature {
+    private  Integer id;
+//    private Integer featureNum;
     private Float accuracy;
     private Float pre;
     private Float recall;
+    private Float f1;
 }

@@ -1,13 +1,11 @@
 package com.example.demo.test;
 
 
-import com.example.demo.service.impl.SpamPredict;
+import com.example.demo.service.SpamPredict;
 import com.example.demo.utils.HanlpProcess;
 import com.example.demo.utils.ProcessFile;
 import com.example.demo.utils.RemoveStopWords;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 
 import java.util.ArrayList;
 import java.util.Map;
