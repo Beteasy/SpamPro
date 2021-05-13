@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.extend.findfeaturenum.MySpamTrain_Frequency_FindFeatureNum;
 import com.example.demo.pojo.EvaluationFeature;
 import com.example.demo.service.impl.EvaluationFeatureServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,20 +20,18 @@ import java.util.List;
 public class EvaluationFeatureController {
     @Autowired
     EvaluationFeatureServiceImpl evaluationFeatureService;
+    @Autowired
+    MySpamTrain_Frequency_FindFeatureNum trainAndPreServ;
 
     @GetMapping(value = "/evaluationfeature")
     public List<EvaluationFeature> getEvaluationFeature(){
         List<EvaluationFeature> evaluationFeatures = evaluationFeatureService.getEvaluationFeature();
-        System.out.println(evaluationFeatures);
-        EvaluationFeature evaluationFeature = new EvaluationFeature();
-        evaluationFeature.setId(100);
-        evaluationFeature.setAccuracy((float)12.0);
-        evaluationFeature.setPre((float)12.0);
-        evaluationFeature.setRecall((float)12.0);
-        evaluationFeature.setF1((float)12.0);
-        boolean b = evaluationFeatureService.saveOrUpdate(evaluationFeature);
-        System.out.println(b);
         return evaluationFeatures;
+    }
+
+    @GetMapping(value = "/trainAndPreFeature")
+    public void trainAndPreFeature(){
+        trainAndPreServ.trainAndPre();
     }
 
 }

@@ -68,23 +68,15 @@ public static ArrayList<ArrayList<String>> getKeyWordsList(ArrayList<ArrayList<S
 //            System.out.println(wordsList.get(i));
             wordsList.get(i).removeAll(stopWordsList);
 //            System.out.println(wordsList.get(i));
+            //过滤掉长度为1和长度超过12的词组
             for (int j=0; j<wordsList.get(i).size();j++){
-                if (wordsList.get(i).get(j).length()<2){
+                if (wordsList.get(i).get(j).length()<2 || wordsList.get(i).get(j).length()>12){
                     wordsList.get(i).remove(wordsList.get(i).get(j));
                 }
             }
 
         }
-//        for (int i=0; i<wordsList.size();i++){
-//            //去除长度为1的词
-//            for (String word:){
-//                if (word.length()<2){
-//                    wordsList.get(i).remove(word);
-//                }
-//            }
-//        }
 
-        //wordsList.removeAll(stopWordsList);
     } catch (Exception e) {
         e.printStackTrace();
     }

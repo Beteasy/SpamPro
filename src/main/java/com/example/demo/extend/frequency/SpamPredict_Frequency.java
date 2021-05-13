@@ -71,7 +71,7 @@ public class SpamPredict_Frequency {
         }
         result = stringBuffer.toString();
         List<String> keyList = Arrays.asList(result.split(","));
-        ArrayList strList = new ArrayList<String>();
+        ArrayList<String> strList = new ArrayList<String>();
         strList.add(str);
         System.out.println(keyList);
         System.out.println(strList);
@@ -265,9 +265,6 @@ public class SpamPredict_Frequency {
         System.out.println("FN = "+FN);
         System.out.println("查准率 = "+decimalFormat.format(((double)TP/(TP+FP)) ));
         System.out.println("召回率 = "+decimalFormat.format(((double)TP/(TP+FN))));
-//        double precision = (double)TP/(TP+FP);
-//        double recall = (double)TP/(TP+FN);
-//        double F1 = (2*precision*recall)/(precision+recall);
         double precision = Double.valueOf(decimalFormat.format(((double)TP/(TP+FP))));
         double recall = Double.valueOf(decimalFormat.format(((double)TP/(TP+FN))));
         double F1 =  Double.valueOf(decimalFormat.format((2*precision*recall)/(precision+recall)));

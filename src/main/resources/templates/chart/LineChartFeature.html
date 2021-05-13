@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!--    <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>-->
+    <script src="http://www.jq22.com/jquery/jquery-1.10.2.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/echarts/5.1.0/echarts.js"></script>
+</head>
+<body th:fragment="echart">
+<!--特征数量参数选择则线图-->
+<div id="featureNumSelect" style="width: 600px;height:600px;"></div>
+<script type="text/javascript">
+    $(function (){
+        $.ajax({
+            url:"/evaluationfeature",
+            type:"GET",
+            success:function (data){
+                var dataArr = new Array();
+                dataArr.push(['id', 'accuracy', 'precision', 'recall', 'F1-Score']);
+                for (let dataKey in data) {
+                    // console.log(data[dataKey].id)
+                    var tmp = [data[dataKey].id,data[dataKey].accuracy,data[dataKey].pre,data[dataKey].recall,data[dataKey].f1];
+                    dataArr.push(tmp);
+                }
+                console.log(dataArr)
+                var myChart = echarts.init(document.getElementById('featureNumSelect'));
+                var option = {
+                    title: {
+                        text: '折线图堆叠'
+                    },
+                    tooltip: {
+                        trigger: 'axis'
+                    },
+                    legend: {
+                        data: ['FeatureNum', 'accuracy', 'precision', 'recall', 'F1-Score']
+                    },
+                    grid: {
+                        left: '3%',
+                        right: '4%',
+                        bottom: '3%',
+                        containLabel: true
+                    },
+                    toolbox: {
+                        feature: {
+                            saveAsImage: {}
+                        }
+                    },
+                    dataset: {
+                        source: dataArr
+                    },
+                    xAxis: {
+                        type: 'category',
+                        boundaryGap: false,
+                        // data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
+                    },
+                    yAxis: {
+                        type: 'value',
+                        // scala: true,
+                        min: 0.7
+                    },
+                    series: [
+                        {
+
+                            type: 'line',
+                            // itemStyle: {
+                            //     normal: {
+                            //         label: {
+                            //             show: true, //开启显示
+                            //             position: 'top', //在上方显示
+                            //             textStyle: { //数值样式
+                            //                 color: 'black',
+                            //                 fontSize: 16
+                            //             }
+                            //         }
+                            //     }
+                            // }
+
+                        },
+                        {
+
+                            type: 'line',
+                            // stack: '总量',
+                            // data: [220, 182, 191, 234, 290, 330, 310]
+                        },
+                        {
+                            // name: '视频广告',
+                            type: 'line',
+                            // stack: '总量',
+                            // data: [150, 232, 201, 154, 190, 330, 410]
+                        },
+                        {
+                            // name: '直接访问',
+                            type: 'line',
+                            // stack: '总量',
+                            // data: [320, 332, 301, 334, 390, 330, 320]
+                        },
+                        {
+                            // name: '搜索引擎',
+                            type: 'line',
+                            // stack: '总量',
+                            // data: [820, 932, 901, 934, 1290, 1330, 1320]
+                        }
+                    ]
+                };
+
+                option && myChart.setOption(option);
+
+            }
+        })
+    })
+</script>
+</body>
+</html>

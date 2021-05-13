@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.pojo.Evaluation;
 import com.example.demo.service.impl.EvaluationServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,8 +22,9 @@ public class EvaluationController {
     EvaluationServiceImpl evaluationService;
 
     @GetMapping(value = "/evaluation")
-    public List<Evaluation> getEvaluation(){
+    public List<Evaluation> getEvaluation(Model model){
         List<Evaluation> evaluations = evaluationService.getEvaluation();
+        model.addAttribute("evaluations", evaluations);
         return evaluations;
     }
 

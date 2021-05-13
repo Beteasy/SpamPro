@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!--    <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>-->
+    <div th:replace="common/common :: commonHeader"></div>
+</head>
+<body th:fragment="table">
+<!--    绘制不同对比算法的表格-->
+<!-- Table Styles -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">不同模型评估指标</h3>
+
+                <div class="panel-options">
+                    <a href="#">
+                        <i class="linecons-cog"></i>
+                    </a>
+
+                    <a href="#" data-toggle="panel">
+                        <span class="collapse-icon">&ndash;</span>
+                        <span class="expand-icon">+</span>
+                    </a>
+
+                    <a href="#" data-toggle="reload">
+                        <i class="fa-rotate-right"></i>
+                    </a>
+
+                    <a href="#" data-toggle="remove">
+                        &times;
+                    </a>
+                </div>
+            </div>
+            <div class="panel-body panel-border">
+                <div class="row">
+                    <div class="col-md-12">
+                        <!-- Combined Table -->
+                        <table class="table table-bordered table-striped  table-hover">
+                            <thead>
+                            <tr>
+                                <th></th>
+                                <th>Name</th>
+                                <th>Address</th>
+                            </tr>
+                            </thead>
+
+                            <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>Arlind</td>
+                                <td>Nushi</td>
+                            </tr>
+
+                            <tr>
+                                <td>2</td>
+                                <td>Art</td>
+                                <td>Ramadani</td>
+                            </tr>
+
+                            <tr>
+                                <td>3</td>
+                                <td>Filan</td>
+                                <td>Fisteku</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--发送请求，从数据库中读到数据-->
+<script type="text/javascript">
+    $(function (){
+        $.ajax({
+            url:"/evaluation",
+            type:"GET",
+            success:function (data){
+
+            }
+        })
+    })
+</script>
+
+<!-- Bottom Scripts -->
+<div th:replace="common/common :: commonScript"></div>
+
+
+<!-- Imported scripts on this page -->
+<script th:src="@{/assets/js/xenon-widgets.js}"></script>
+<script th:src="@{/assets/js/devexpress-web-14.1/js/globalize.min.js}"></script>
+<script th:src="@{/assets/js/devexpress-web-14.1/js/dx.chartjs.js}"></script>
+<script th:src="@{/assets/js/toastr/toastr.min.js}"></script>
+
+</body>
+</html>

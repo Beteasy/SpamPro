@@ -13,6 +13,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class EchartsController {
     @GetMapping("/echart")
     public String toChartHTML() {
-        return "charttest";
+        return "chart/charttest";
+    }
+
+    @GetMapping("/LineChartFeature")
+    public String toLineChartFeature(){
+        return "chart/LineChartFeature";
     }
 }

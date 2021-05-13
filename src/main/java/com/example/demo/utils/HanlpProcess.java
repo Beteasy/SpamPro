@@ -1,8 +1,12 @@
 package com.example.demo.utils;
 
+import com.hankcs.hanlp.HanLP;
+import com.hankcs.hanlp.model.crf.CRFLexicalAnalyzer;
+import com.hankcs.hanlp.model.crf.CRFSegmenter;
 import com.hankcs.hanlp.seg.common.Term;
 import com.hankcs.hanlp.tokenizer.NLPTokenizer;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,27 +49,19 @@ public static ArrayList<ArrayList<String>> cutWords(ArrayList<String> bodyList){
      * @Date 2021/1/28 11:11
      * 这种方式是吧每个邮件分词后的结果单独放，最后返回结果相当于是一个二维数组，每一维都是一个ArrayList<String>
      */
+    HanLP.Config.ShowTermNature = false;    //测试通过，关闭了词性标注，不需要再遍历每个词组处理
     ArrayList<ArrayList<String>> wordsList = new ArrayList<ArrayList<String>>();
     for (String body: bodyList){
         //NLP分词
-//        System.out.println("body"+body);
-        //分词后就会多出空格来了------------------实际上没多出空格，只是显示出来感觉多了
-        List<Term> words = NLPTokenizer.segment(body);
-        System.out.println(words);
-        ArrayList<String> eachMail = new ArrayList<>();
-        for (Term term:words){
-            String w = term.word;
-//            System.out.println(w);
-            //这里不起作用，在processfile中进行处理
-//            System.out.println("before trim:"+w+"----len:"+w.length());
-//            w.replaceAll("\\s*","");
-//            System.out.println(w.length());
-//            System.out.println("after trim:"+w+"----len:"+w.length());
-            eachMail.add(w);
-            
+//        List<Term> words = NLPTokenizer.segment(body);
+        List<String> words = new ArrayList<>();
+        try {
+            CRFLexicalAnalyzer analyzer = new CRFLexicalAnalyzer();
+            words = analyzer.segment(body);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        System.out.println(eachMail);
-        wordsList.add(eachMail);
+        wordsList.add(new ArrayList<>(words));
     }
     return wordsList;
 }

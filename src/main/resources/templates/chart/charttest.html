@@ -17,17 +17,24 @@
             type:"GET",
             success:function (data){
                 var dataArr = new Array();
-                dataArr.push(['id', 'accuracy', 'precision', 'recall']);
+                dataArr.push(['id', 'accuracy', 'precision', 'recall', 'F1-Score']);
                 for (let dataKey in data) {
-                    console.log(data[dataKey].id)
-                    var tmp = [data[dataKey].id,data[dataKey].accuracy,data[dataKey].pre,data[dataKey].recall];
+                    // console.log(data[dataKey].id)
+                    var tmp = [data[dataKey].id,data[dataKey].accuracy,data[dataKey].pre,data[dataKey].recall,data[dataKey].f1];
                     dataArr.push(tmp);
                 }
                 console.log(dataArr)
                 var myChart = echarts.init(document.getElementById('main'));
                 var option = {
                     legend: {},
-                    tooltip: {},
+                    tooltip: {
+
+                    },
+                    toolbox: {
+                        feature: {
+                            saveAsImage: {}
+                        }
+                    },
                     dataset: {
                         source: dataArr
                     },
@@ -95,5 +102,6 @@
         })
     })
 </script>
+
 </body>
 </html>

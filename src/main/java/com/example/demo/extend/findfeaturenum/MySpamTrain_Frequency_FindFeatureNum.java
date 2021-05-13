@@ -1,6 +1,7 @@
 package com.example.demo.extend.findfeaturenum;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.example.demo.entity.SparkConfig;
 import com.example.demo.pojo.EvaluationFeature;
 import com.example.demo.service.impl.EvaluationFeatureServiceImpl;
 import com.example.demo.utils.HanlpProcess;
@@ -17,6 +18,7 @@ import org.apache.spark.mllib.regression.LabeledPoint;
 import org.apache.spark.rdd.RDD;
 import org.apache.spark.sql.sources.In;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.math.RoundingMode;
@@ -29,6 +31,8 @@ import java.util.*;
  * @Author 21971
  * @Date 2021/1/30 15:33
  */
+
+@Service
 public class MySpamTrain_Frequency_FindFeatureNum {
     //the path of index file
     //fowling two paths need to be modified if run on linux
@@ -45,21 +49,26 @@ public class MySpamTrain_Frequency_FindFeatureNum {
     public static final Integer SPAM_NUM_PREDICT = 3000;
     //the number of ham used for predicting
     public static final Integer HAM_NUM_PREDICT = 3000;
-    //初始特征数量
-    public static final Integer FEATURE_NUM_INIT = 50;
-    //——最大选择150个特征
+    //初始特征数量的一半
+    public static final Integer FEATURE_NUM_INIT = 25;
+    //——最大选择150个特征，还是总数的一半
     public static final Integer FEATURE_NUM_MAX = 150;
     //每次增加多少个特征
-    public static final Integer FEATURE_NUM_INCREMENT = 50;
+    public static final Integer FEATURE_NUM_INCREMENT = 25;
 
+    @Autowired
+    EvaluationFeatureServiceImpl evaluationFeatureService;
 
-    public static void main(String[] args) {
-        Integer featureNum = FEATURE_NUM_INIT;
+    @Autowired
+    JavaSparkContext javaSparkContext;
 
-        //创建spark配置对象
-        SparkConf conf = new SparkConf().setAppName("spam").setMaster("local[*]");
-        //创建JavaSpark上下文对象
-        JavaSparkContext javaSparkContext = new JavaSparkContext(conf);
+    public void trainAndPre() {
+        Integer featureNum = 0;
+
+//        //创建spark配置对象
+//        SparkConf conf = new SparkConf().setAppName("spam").setMaster("local[*]");
+//        //创建JavaSpark上下文对象
+//        JavaSparkContext javaSparkContext = new JavaSparkContext(conf);
 
         ArrayList<String> spamMailList  = new ArrayList<>();
         ArrayList<String> hamMailList   = new ArrayList<>();
@@ -109,9 +118,9 @@ public class MySpamTrain_Frequency_FindFeatureNum {
         keyHamWords = RemoveStopWords.getKeyWordsList(hamWordsList);
 
         //循环训练，预测，找到合适的特征数量
-        for (int i=0; i<(FEATURE_NUM_MAX/FEATURE_NUM_INCREMENT); i++){
+        for (int i=0; i<=((FEATURE_NUM_MAX-FEATURE_NUM_INIT)/FEATURE_NUM_INCREMENT); i++){
             //更新特征数量
-            featureNum += i*FEATURE_NUM_INCREMENT;
+            featureNum += FEATURE_NUM_INCREMENT;
 
             // 对分词列表进行词频统计获取TOPN数据
             System.out.println("**********************获取TOPN********************");
@@ -320,23 +329,19 @@ public class MySpamTrain_Frequency_FindFeatureNum {
             System.out.println("FN = "+FN);
             System.out.println("查准率 = "+decimalFormat.format(((double)TP/(TP+FP)) ));
             System.out.println("召回率 = "+decimalFormat.format(((double)TP/(TP+FN))));
-//        double precision = (double)TP/(TP+FP);
-//        double recall = (double)TP/(TP+FN);
-//        double F1 = (2*precision*recall)/(precision+recall);
             double accuracy = Double.valueOf(decimalFormat.format((double)(labeledPoints.size() - wrong) / labeledPoints.size()));
             double precision = Double.valueOf(decimalFormat.format(((double)TP/(TP+FP))));
             double recall = Double.valueOf(decimalFormat.format(((double)TP/(TP+FN))));
             double F1 =  Double.valueOf(decimalFormat.format((2*precision*recall)/(precision+recall)));
             System.out.println("F1 = "+F1);
             EvaluationFeature evaluationFeature = new EvaluationFeature();
-            evaluationFeature.setId(featureNum);
+            evaluationFeature.setId(2*featureNum);
             evaluationFeature.setAccuracy((float)accuracy);
             evaluationFeature.setPre((float)precision);
             evaluationFeature.setRecall((float)recall);
             evaluationFeature.setF1((float)F1);
-            //将结果写到数据库
-            EvaluationFeatureServiceImpl service = new EvaluationFeatureServiceImpl();
-            service.saveOrUpdate(evaluationFeature);
+//            EvaluationFeatureServiceImpl evaluationFeatureService = new EvaluationFeatureServiceImpl();
+            boolean b2 = evaluationFeatureService.saveOrUpdate(evaluationFeature);
             System.out.println("==========程序结束============");
 
         }

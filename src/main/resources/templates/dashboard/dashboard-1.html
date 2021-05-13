@@ -18,7 +18,6 @@
 <body class="page-body">
 
 
-
 	<div class="page-container"><!-- add class "sidebar-collapsed" to close sidebar by default, "chat-visible" to make chat appear always -->
 
 		<!-- Add "fixed" class to make the sidebar fixed always to the browser viewport. -->
@@ -29,102 +28,15 @@
 		<div class="main-content">
 			<div th:replace="common/common :: user-info-navbar"></div>
 
-<!--			获取model中的数据-->
-<!--			<input type="hidden" th:value="${evaluations}" id="evaluations"></input>-->
-<!--			<div class="panel panel-default">-->
-<!--				<div class="panel-heading">-->
-<!--					<h3 class="panel-title">Grouped Bars</h3>-->
-<!--					<div class="panel-options">-->
-<!--						<a href="#" data-toggle="panel">-->
-<!--							<span class="collapse-icon">&ndash;</span>-->
-<!--							<span class="expand-icon">+</span>-->
-<!--						</a>-->
-<!--						<a href="#" data-toggle="remove">-->
-<!--							&times;-->
-<!--						</a>-->
-<!--					</div>-->
-<!--				</div>-->
-<!--				<div class="panel-body">-->
-<!--					<script type="text/javascript">-->
-<!--						jQuery(document).ready(function($)-->
-<!--						{-->
-<!--							// var evaluations = $("#evaluations");-->
-<!--							// // console.log(evaluations);-->
-<!--							// // console.log(evaluations[1]);-->
-<!--							// console.log(evaluations)-->
-<!--							// var evaluations = sessionStorage.getItem("evaluations");-->
-<!--							// console.log(evaluations);-->
-
-
-<!--							var dataSource = [-->
-<!--								{ id: "TFIDFWithNB", accuracy: 92.0, precision: 89.0, recall: 95.0 },-->
-<!--								{ id: "TFIDFWithSVMWithSGD", accuracy: 94.0, precision: 91.0, recall: 96.0 },-->
-<!--								{ id: "TFWithNB", accuracy: 92.0, precision: 88.0, recall: 96.0 },-->
-<!--								// { model: "Iran", oil: 5.3, gas: 4.39 },-->
-<!--								// { model: "Canada", oil: 4.08, gas: 5.4 },-->
-<!--								// { model: "Saudi Arabia", oil: 12.03 },-->
-<!--								// { model: "Mexico", oil: 3.86 }-->
-<!--							];-->
-
-<!--							$("#bar-2").dxChart({-->
-<!--								equalBarWidth: false,-->
-<!--								dataSource: dataSource,-->
-<!--								commonSeriesSettings: {-->
-<!--									argumentField: "id",-->
-<!--									type: "bar"-->
-<!--								},-->
-<!--								series: [-->
-<!--									{ valueField: "accuracy", name: "accuracy", color: "#0e62c7" },-->
-<!--									{ valueField: "precision", name: "precisionn", color: "#2c2e2f" },-->
-<!--									{ valueField: "recall", name: "recall", color: "#7c38bc" }-->
-<!--								],-->
-<!--								legend: {-->
-<!--									verticalAlignment: "bottom",-->
-<!--									horizontalAlignment: "center"-->
-<!--								},-->
-<!--								title: "模型评估指标"-->
-<!--							});-->
-<!--						});-->
-<!--					</script>-->
-<!--					<div id="bar-2" style="height: 400px; width: 100%;"></div>-->
-<!--				</div>-->
-<!--			</div>-->
-<!--			<div th:replace="charttest :: echart"></div>-->
+<!--			不同算法的评价指标表-->
+			<div class="row">
+				<iframe th:src="@{/tableDiffAlgorithm}" frameborder="0" class="col-md-12" height="350px"></iframe>
+			</div>
+<!--			不同算法的评价柱状图-->
 			<iframe th:src="@{/echart}" style="width: 700px; height: 700px" frameborder="0"></iframe>
-<!--			<div style="width: 500px;height: 500px" id="bar">111</div>-->
+<!--			特征选择折线图-->
+			<iframe th:src="@{/LineChartFeature}" style="width: 700px; height: 700px" frameborder="0"></iframe>
 
-
-<!--			柱状图-->
-<!--			<div  id="main" style="width: 900px;height:600px; background-color: red">11</div>-->
-<!--			<script type="text/javascript">-->
-<!--				var chartDom = document.getElementById('bar');-->
-<!--				var myChart = echarts.init(chartDom);-->
-<!--				var option;-->
-
-<!--				option = {-->
-<!--					legend: {},-->
-<!--					tooltip: {},-->
-<!--					dataset: {-->
-<!--						source: [-->
-<!--							['product', '2015', '2016', '2017'],-->
-<!--							['Matcha Latte', 43.3, 85.8, 93.7],-->
-<!--							['Milk Tea', 83.1, 73.4, 55.1],-->
-<!--							['Cheese Cocoa', 86.4, 65.2, 82.5],-->
-<!--							['Walnut Brownie', 72.4, 53.9, 39.1]-->
-<!--						]-->
-<!--					},-->
-<!--					xAxis: {type: 'category'},-->
-<!--					yAxis: {},-->
-<!--					// Declare several bar series, each will be mapped-->
-<!--					// to a column of dataset.source by default.-->
-<!--					series: [-->
-<!--						{type: 'bar'},-->
-<!--						{type: 'bar'},-->
-<!--						{type: 'bar'}-->
-<!--					]-->
-<!--				};-->
-<!--				option && myChart.setOption(option);-->
-<!--			</script>-->
 
 			<!-- Main Footer -->
 			<!-- Choose between footer styles: "footer-type-1" or "footer-type-2" -->
@@ -163,8 +75,6 @@
 		<div class="loader-2"></div>
 	</div>
 	
-
-
 
 	<!-- Bottom Scripts -->
 	<div th:replace="common/common :: commonScript"></div>
