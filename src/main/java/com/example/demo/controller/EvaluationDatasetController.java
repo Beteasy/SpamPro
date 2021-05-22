@@ -31,9 +31,15 @@ public class EvaluationDatasetController {
         return evaluationDatasets;
     }
 
-    @GetMapping(value = "/trainAndPreDataset")
-    public void trainAndPreDataset(){
-        mySpamTrain_tfidf_sms.trainAndPre();
+    @GetMapping(value = "/trainAndPreDataSMS")
+    public void trainAndPreDataSMS(){
+        evaluationDatasetService.trainAndPreDataSMS();
+    }
+
+
+    @GetMapping(value = "/trainAndPreDataTREC")
+    public void trainAndPreDataTREC(){
+        evaluationDatasetService.trainAndPreDataTREC();
     }
 
 }

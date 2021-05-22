@@ -6,10 +6,50 @@
     <!--    <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>-->
     <script src="http://www.jq22.com/jquery/jquery-1.10.2.js"></script>
     <script src="https://cdn.bootcdn.net/ajax/libs/echarts/5.1.0/echarts.js"></script>
+    <div th:replace="common/common :: commonHeader"></div>
 </head>
 <body th:fragment="echart">
-<!--特征数量参数选择则线图-->
-<div id="featureNumSelect" style="width: 600px;height:600px;"></div>
+
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">特征数量选择折线图</h3>
+
+                <div class="panel-options">
+                    <a href="#">
+                        <i class="linecons-cog"></i>
+                    </a>
+
+                    <a href="#" data-toggle="panel">
+                        <span class="collapse-icon">&ndash;</span>
+                        <span class="expand-icon">+</span>
+                    </a>
+
+                    <a href="#" data-toggle="reload">
+                        <i class="fa-rotate-right"></i>
+                    </a>
+
+                    <a href="#" data-toggle="remove">
+                        &times;
+                    </a>
+                </div>
+            </div>
+            <div class="panel-body panel-border">
+                <div class="row">
+                    <div class="col-md-12">
+                        <!--特征数量参数选择则线图-->
+                        <div id="featureNumSelect" class="col-md-12" style="height:600px;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
 <script type="text/javascript">
     $(function (){
         $.ajax({
@@ -17,7 +57,7 @@
             type:"GET",
             success:function (data){
                 var dataArr = new Array();
-                dataArr.push(['id', 'accuracy', 'precision', 'recall', 'F1-Score']);
+                dataArr.push(['特征数量', '准确率', '查准率', '召回率', 'F1-Score']);
                 for (let dataKey in data) {
                     // console.log(data[dataKey].id)
                     var tmp = [data[dataKey].id,data[dataKey].accuracy,data[dataKey].pre,data[dataKey].recall,data[dataKey].f1];
@@ -27,13 +67,13 @@
                 var myChart = echarts.init(document.getElementById('featureNumSelect'));
                 var option = {
                     title: {
-                        text: '折线图堆叠'
+                        text: ''
                     },
                     tooltip: {
                         trigger: 'axis'
                     },
                     legend: {
-                        data: ['FeatureNum', 'accuracy', 'precision', 'recall', 'F1-Score']
+                        data: ['特征数量', '准确率', '查准率', '召回率', 'F1-Score']
                     },
                     grid: {
                         left: '3%',
@@ -57,7 +97,7 @@
                     yAxis: {
                         type: 'value',
                         // scala: true,
-                        min: 0.7
+                        min: 60
                     },
                     series: [
                         {
@@ -110,5 +150,16 @@
         })
     })
 </script>
+
+
+<!-- Bottom Scripts -->
+<div th:replace="common/common :: commonScript"></div>
+
+
+<!-- Imported scripts on this page -->
+<script th:src="@{/assets/js/xenon-widgets.js}"></script>
+<script th:src="@{/assets/js/devexpress-web-14.1/js/globalize.min.js}"></script>
+<script th:src="@{/assets/js/devexpress-web-14.1/js/dx.chartjs.js}"></script>
+<script th:src="@{/assets/js/toastr/toastr.min.js}"></script>
 </body>
 </html>

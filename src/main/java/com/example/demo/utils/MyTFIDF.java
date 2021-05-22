@@ -62,7 +62,9 @@ public class MyTFIDF {
         HashMap<String, Float> tfIdf = new HashMap<>();
 
         //计算IDF值
+        int i=1;
         for (String key:tf.keySet()){
+            System.out.println("计算第"+(i++)+"个IDF");
             //包含该关键词的文档数
             int containMailNum = 0;
             for (ArrayList<String> oneMail:keyWords){

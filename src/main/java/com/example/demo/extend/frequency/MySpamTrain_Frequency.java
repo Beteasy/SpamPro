@@ -4,6 +4,7 @@ import com.example.demo.utils.HanlpProcess;
 import com.example.demo.utils.MyTFIDF;
 import com.example.demo.utils.ProcessFile;
 import com.example.demo.utils.RemoveStopWords;
+import org.apache.commons.io.FileUtils;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.mllib.classification.NaiveBayes;
@@ -13,6 +14,7 @@ import org.apache.spark.mllib.regression.LabeledPoint;
 import org.apache.spark.rdd.RDD;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.*;
@@ -29,12 +31,12 @@ public class MySpamTrain_Frequency {
     public static final String FULL_PATH = "E:\\FinalProject\\datasets\\trec06c\\full\\index_train";
     public static final String DATA_PRE_PATH = "E:\\FinalProject\\datasets\\trec06c";
     public static final String MODEL_PATH = "E:\\FinalProject\\models\\frequency";
-    public static final String TOP200_PATH  = "E:\\FinalProject\\datasets\\trec06c\\spam_java.txt";
+    public static final String TOP2N_PATH  = "E:\\FinalProject\\datasets\\trec06c\\spam_java.txt";
     //the number of spam used for training
     public static final Integer SPAM_NUM_TRAIN = 3000;
     //the number of ham used for training
     public static final Integer HAM_NUM_TRAIN = 3000;
-    public static final Integer FEATURE_NUM = 100;
+    public static final Integer FEATURE_NUM = 200;
 
 
     public static void main(String[] args) {
@@ -80,53 +82,30 @@ public class MySpamTrain_Frequency {
             }
         }
         System.out.println("**********************正在分词********************");
-        ArrayList<ArrayList<String>> spamWordsList = new ArrayList<ArrayList<String>>();
-        ArrayList<ArrayList<String>> hamWordsList = new ArrayList<ArrayList<String>>();
-        spamWordsList = HanlpProcess.cutWords(spamMailList);
-        hamWordsList = HanlpProcess.cutWords(hamMailList);
+        ArrayList<ArrayList<String>> spamWordsList = HanlpProcess.cutWords(spamMailList);
+        ArrayList<ArrayList<String>> hamWordsList = HanlpProcess.cutWords(hamMailList);
 
-
-
-
-
-        /*****************remove stop words——旧版*******************************/
-//        ArrayList<String> keySpamWords = new ArrayList<>();
-//        ArrayList<String> keyHamWords = new ArrayList<>();
-//        keySpamWords = RemoveStopWords.getKeyWordsList(spamWordsList);
-//        keyHamWords = RemoveStopWords.getKeyWordsList(hamWordsList);
         /*****************remove stop words——新版*******************************/
         System.out.println("**********************正在去除停用词********************");
-        ArrayList<ArrayList<String>> keySpamWords = new ArrayList<ArrayList<String>>();
-        ArrayList<ArrayList<String>> keyHamWords = new ArrayList<ArrayList<String>>();
-        keySpamWords = RemoveStopWords.getKeyWordsList(spamWordsList);
-        keyHamWords = RemoveStopWords.getKeyWordsList(hamWordsList);
-//        System.out.println("####################remove stop words################################");
-//        System.out.println(keyHamWords);
-//        System.out.println(keySpamWords);
+        ArrayList<ArrayList<String>> keySpamWords = RemoveStopWords.getKeyWordsList(spamWordsList);
+        ArrayList<ArrayList<String>> keyHamWords = RemoveStopWords.getKeyWordsList(hamWordsList);
+
+        // 对分词列表进行词频统计获取TOPN/2数据
+        System.out.println("**********************获取TOPN/2********************");
+        List<String> spamTopN = getTopN(keySpamWords,FEATURE_NUM/2);
+        List<String> hamTopN = getTopN(keyHamWords,FEATURE_NUM/2);
 
 
-        // 对分词列表进行词频统计获取TOP100数据
-        System.out.println("**********************获取TOP100********************");
-        List<String> spamTop100 = getTop100(keySpamWords);
-        List<String> hamTop100 = getTop100(keyHamWords);
-        /*****************************************************/
-//        System.out.println("/*******************top100**********************************/");
-//        System.out.println("spamTop100"+spamTop100);
-////        System.out.println(spamTop100.remove("的"));
-//        System.out.println("hamTop100"+hamTop100);
-
-
-
-        // 合并TOP100数据得到特征数据TOP200----------------------------为什么呢？？？？
-        System.out.println("**********************合并得到TOP200********************");
+        // 合并TOPN/2数据得到特征数据TOPN
+        System.out.println("**********************合并得到TOPN********************");
         ArrayList<String> allKeyWord = new ArrayList<>();
         String keyWordStr = "";
-        for (String word:spamTop100){
+        for (String word:spamTopN){
             allKeyWord.add(word);
             //每个词之间用空格分离
             keyWordStr += word + ",";
         }
-        for (String word:hamTop100){
+        for (String word:hamTopN){
             allKeyWord.add(word);
             //每个词之间用空格分离
             keyWordStr += word + ",";
@@ -138,7 +117,7 @@ public class MySpamTrain_Frequency {
         System.out.println("**********************持久化TOP200********************");
         PrintWriter printWriter = null;
         try {
-            printWriter = new PrintWriter(TOP200_PATH);
+            printWriter = new PrintWriter(TOP2N_PATH);
             printWriter.write(keyWordStr);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -149,31 +128,21 @@ public class MySpamTrain_Frequency {
         //对元数据列表进行特征匹配生成训练数据
         System.out.println("**********************对元数据列表进行特征匹配生成训练数据********************");
         ArrayList<LabeledPoint> spamLabledPointList = getTrainData(keySpamWords, allKeyWord, 1.0);
-
-        //这里和后面预测返回结果是否有关
-//        ArrayList<LabeledPoint> hamLabledPointList = getTrainData(keyHamWords, allKeyWord, 2.0);
         ArrayList<LabeledPoint> hamLabledPointList = getTrainData(keyHamWords, allKeyWord, 0.0);
-//        System.out.println(spamLabledPointList);
-//        System.out.println(hamLabledPointList);
         spamLabledPointList.addAll(hamLabledPointList);
         // 将训练数据转化为rdd
         RDD<LabeledPoint> trainRDD = jsc.parallelize(spamLabledPointList).rdd();
         // 数据训练生成模型
         System.out.println("**********************训练模型********************");
         NaiveBayesModel model = NaiveBayes.train(trainRDD);
-        // 持久化模型
-//        File file = new File("E:\\FinalProject\\datasets\\trec06c\\model\\model_java");
-//        if(file.list().length == 0){
-//            model.save(jsc.sc(),"E:\\FinalProject\\datasets\\trec06c\\model\\model_java");
-//        }
         System.out.println("**********************持久化模型********************");
-//        String modelPath = "E:\\FinalProject\\datasets\\trec06c\\model";
+        boolean b = FileUtils.deleteQuietly(new File(MODEL_PATH));
         model.save(jsc.sc(),MODEL_PATH);
 
     }
 
     /*****************get Top100 keywords******************************/
-    public static List<String> getTop100(ArrayList<ArrayList<String>> keywordList){
+    public static List<String> getTopN(ArrayList<ArrayList<String>> keywordList,Integer featureNum){
         Map<String, Float> tf = MyTFIDF.tfCalculate(keywordList);
         List<Map.Entry<String, Float>> list = new ArrayList<Map.Entry<String, Float>>(tf.entrySet());
         Collections.sort(list, new Comparator<Map.Entry<String, Float>>() {
@@ -183,16 +152,15 @@ public class MySpamTrain_Frequency {
             }
         });
         System.out.println(list);
-        List<String> listTop100 = new ArrayList<>();
-        //选100个TF最大的出来
+        List<String> listTopN = new ArrayList<>();
+        //选N个TF最大的出来
         for(Map.Entry<String,Float> m : list){
-//            System.out.println(m.getKey()+"="+m.getValue());
-            listTop100.add(m.getKey());
-            if (listTop100.size()==FEATURE_NUM){
+            listTopN.add(m.getKey());
+            if (listTopN.size()==featureNum){
                 break;
             }
         }
-        return listTop100;
+        return listTopN;
     }
 //    public static List<String> getTop100(ArrayList<ArrayList<String>> keywordList, JavaSparkContext jsc){
 //        //获取top15

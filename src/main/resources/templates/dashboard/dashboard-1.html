@@ -30,42 +30,44 @@
 
 <!--			不同算法的评价指标表-->
 			<div class="row">
-				<iframe th:src="@{/tableDiffAlgorithm}" frameborder="0" class="col-md-12" height="350px"></iframe>
+				<iframe id="evaluationTable" th:src="@{/tableDiffAlgorithm}" frameborder="0" class="col-md-12" onload="evaluationTableLoad()"></iframe>
 			</div>
+			<script type="text/javascript">
+				function evaluationTableLoad()
+				{
+					document.getElementById("evaluationTable").height=0;
+					document.getElementById("evaluationTable").height=document.getElementById("evaluationTable").contentWindow.document.body.scrollHeight;
+				}
+			</script>
 <!--			不同算法的评价柱状图-->
-			<iframe th:src="@{/echart}" style="width: 700px; height: 700px" frameborder="0"></iframe>
+			<div class="row">
+				<iframe id="evaluationBar" th:src="@{/barDiffAlgorithm}" class="col-md-12" style="height: 700px" frameborder="0" onload="evaluationBarLoad()"></iframe>
+			</div>
+			<script type="text/javascript">
+				function evaluationBarLoad()
+				{
+					document.getElementById("evaluationBar").height=0;
+					document.getElementById("evaluationBar").height=document.getElementById("evaluationBar").contentWindow.document.body.scrollHeight;
+				}
+			</script>
 <!--			特征选择折线图-->
-			<iframe th:src="@{/LineChartFeature}" style="width: 700px; height: 700px" frameborder="0"></iframe>
+			<div class="row">
+				<iframe id="featureLiner" th:src="@{/LineChartFeature}" class="col-md-12" style="height: 700px" frameborder="0" onload="featureLinerLoad()"></iframe>
+			</div>
+			<script type="text/javascript">
+				function featureLinerLoad()
+				{
+					document.getElementById("featureLiner").height=0;
+					document.getElementById("featureLiner").height=document.getElementById("featureLiner").contentWindow.document.body.scrollHeight;
+				}
+			</script>
 
 
 			<!-- Main Footer -->
 			<!-- Choose between footer styles: "footer-type-1" or "footer-type-2" -->
 			<!-- Add class "sticky" to  always stick the footer to the end of page (if page contents is small) -->
 			<!-- Or class "fixed" to  always fix the footer to the end of page -->
-			<footer class="main-footer sticky footer-type-1">
-
-				<div class="footer-inner">
-
-					<!-- Add your copyright text here -->
-					<div class="footer-text">
-						&copy; 2014
-						<strong>Xenon</strong>
-						theme by <a href="http://laborator.co" target="_blank">Laborator</a>
-					</div>
-
-
-					<!-- Go to Top Link, just add rel="go-top" to any link to add this functionality -->
-					<div class="go-up">
-
-						<a href="#" rel="go-top">
-							<i class="fa-angle-up"></i>
-						</a>
-
-					</div>
-
-				</div>
-
-			</footer>
+			<div th:replace="common/common :: main-footer"></div>
 		</div>
 
 	</div>

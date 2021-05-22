@@ -1,10 +1,10 @@
 package com.example.demo.controller;
 
 import com.example.demo.extend.findfeaturenum.MySpamTrain_Frequency_FindFeatureNum;
+import com.example.demo.extend.findfeaturenum.MySpamTrain_TFIDFW_FindFeatureNum;
 import com.example.demo.pojo.EvaluationFeature;
 import com.example.demo.service.impl.EvaluationFeatureServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,6 +22,8 @@ public class EvaluationFeatureController {
     EvaluationFeatureServiceImpl evaluationFeatureService;
     @Autowired
     MySpamTrain_Frequency_FindFeatureNum trainAndPreServ;
+    @Autowired
+    MySpamTrain_TFIDFW_FindFeatureNum tfIDFWeightFeatureServ;
 
     @GetMapping(value = "/evaluationfeature")
     public List<EvaluationFeature> getEvaluationFeature(){
@@ -32,6 +34,12 @@ public class EvaluationFeatureController {
     @GetMapping(value = "/trainAndPreFeature")
     public void trainAndPreFeature(){
         trainAndPreServ.trainAndPre();
+    }
+
+
+    @GetMapping(value = "/trainAndPreFeatureTFIDFW")
+    public void trainAndPreFeatureTFIDFW(){
+        tfIDFWeightFeatureServ.trainAndPre();
     }
 
 }

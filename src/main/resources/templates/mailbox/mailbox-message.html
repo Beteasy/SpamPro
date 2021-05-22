@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta name="description" content="Xenon Boostrap Admin Panel" />
+	<meta name="author" content="" />
+	
+	<title>Xenon - View Message</title>
+
+	<div th:replace="common/common :: commonHeader"></div>
+	
+	
+</head>
+<body class="page-body">
+
+	<div th:replace="common/common :: settings-pane"></div>
+	
+	<div class="page-container"><!-- add class "sidebar-collapsed" to close sidebar by default, "chat-visible" to make chat appear always -->
+			
+		<!-- Add "fixed" class to make the sidebar fixed always to the browser viewport. -->
+		<!-- Adding class "toggle-others" will keep only one menu item open at a time. -->
+		<!-- Adding class "collapsed" collapse sidebar root elements and show only icons. -->
+		<div th:replace="common/common :: sidebar-menu"></div>
+		
+		<div class="main-content">
+					
+			<!-- User Info, Notifications and Menu Bar -->
+			<div th:replace="common/common :: user-info-navbar"></div>
+
+			<div class="page-title">
+				
+				<div class="title-env">
+					<h1 class="title">邮件详情</h1>
+<!--					<p class="description">Mailbox sidebar and single message read more</p>-->
+				</div>
+				
+<!--					<div class="breadcrumb-env">-->
+<!--					-->
+<!--								<ol class="breadcrumb bc-1">-->
+<!--									<li>-->
+<!--							<a href="../templates/dashboard-1.html"><i class="fa-home"></i>Home</a>-->
+<!--						</li>-->
+<!--								<li>-->
+<!--						-->
+<!--										<a href="mailbox-main.html">Mailbox</a>-->
+<!--								</li>-->
+<!--							<li class="active">-->
+<!--						-->
+<!--										<strong>View Message</strong>-->
+<!--								</li>-->
+<!--								</ol>-->
+<!--								-->
+<!--				</div>-->
+					
+			</div>
+			<section class="mailbox-env">
+				
+				<div class="row">
+					
+					<!-- Email Single -->
+					<div class="col-sm-9 mailbox-left">
+						
+						<div class="mail-single">
+							
+							<!-- Email Title and Button Options -->
+							<div class="mail-single-header">
+								<h2 th:utext="${mailDetail.title}">
+<!--									<span class="badge badge-success badge-roundless pull-right upper">Envato</span>-->
+									
+<!--									<a href="mailbox-main.html" class="go-back">-->
+<!--										<i class="fa-angle-left"></i>-->
+<!--										Go Back-->
+<!--									</a>-->
+								</h2>
+								
+<!--								<div class="mail-single-header-options">-->
+<!--									<a href="../templates/mailbox-compose.html" class="btn btn-gray btn-icon">-->
+<!--										<span>Reply</span>-->
+<!--										<i class="fa-reply-all"></i>-->
+<!--									</a>-->
+<!--									-->
+<!--									<a href="mailbox-main.html" class="btn btn-gray btn-icon">-->
+<!--										<i class="fa-trash"></i>-->
+<!--									</a>-->
+<!--								</div>-->
+							</div>
+							
+							<!-- Email Info From/Reply -->
+							<div class="mail-single-info">
+								
+								<div class="mail-single-info-user dropdown">
+<!--									<a href="#" data-toggle="dropdown">-->
+<!--										<img src="assets/images/user-3.png" class="img-circle" width="38" /> -->
+<!--										<span>Arlind Nushi</span>-->
+<!--										(noreply@example.com) to <span>me</span>-->
+<!--										<em class="time">07:51 AM - 15 December</em>-->
+<!--									</a>-->
+									
+<!--									<ul class="dropdown-menu dropdown-secondary">-->
+<!--										<li>-->
+<!--											<a href="#">-->
+<!--												<i class="fa-reply"></i>-->
+<!--												Reply to John Doe-->
+<!--											</a>-->
+<!--										</li>-->
+<!--										<li>-->
+<!--											<a href="#">-->
+<!--												<i class="fa-reply-all"></i>-->
+<!--												Reply to all recipients-->
+<!--											</a>-->
+<!--										</li>-->
+<!--										<li>-->
+<!--											<a href="#">-->
+<!--												<i class="fa-forward"></i>-->
+<!--												Forward message-->
+<!--											</a>-->
+<!--										</li>-->
+<!--										<li class="divider"></li>-->
+<!--										<li>-->
+<!--											<a href="#">-->
+<!--												<i class="fa-trash"></i>-->
+<!--												Move to trash-->
+<!--											</a>-->
+<!--										</li>-->
+<!--										<li>-->
+<!--											<a href="#">-->
+<!--												<i class="fa-remove"></i>-->
+<!--												Delete from everywhere-->
+<!--											</a>-->
+<!--										</li>-->
+<!--									</ul>-->
+								</div>
+								
+<!--								<div class="mail-single-info-options">-->
+<!--									<a href="#" class="star starred">-->
+<!--										<i class="fa-star-empty"></i>-->
+<!--									</a>-->
+<!--									<a href="#">-->
+<!--										<i class="linecons-attach"></i>-->
+<!--									</a>-->
+<!--								</div>-->
+								
+							</div>
+							
+							<!-- Email Body -->
+							<div class="mail-single-body" th:utext="${mailDetail.content}">
+							</div>
+							
+							<!-- Email Attachments -->
+<!--							<div class="mail-single-attachments">-->
+<!--								<h3>-->
+<!--									<i class="linecons-attach"></i>-->
+<!--									Attachments-->
+<!--								</h3>-->
+<!--								-->
+<!--								<ul class="list-unstyled list-inline">-->
+<!--									<li>-->
+<!--										<a href="#" class="thumb">-->
+<!--											<img src="assets/images/attach-1.png" class="img-thumbnail" />-->
+<!--										</a>-->
+<!--										-->
+<!--										<a href="#" class="name">-->
+<!--											IMG_007.jpg-->
+<!--											<span>14KB</span>-->
+<!--										</a>-->
+<!--										-->
+<!--										<div class="links">-->
+<!--											<a href="#">View</a> - -->
+<!--											<a href="#">Download</a>-->
+<!--										</div>-->
+<!--									</li>-->
+<!--									-->
+<!--									<li>-->
+<!--										<a href="#" class="thumb download">-->
+<!--											<img src="assets/images/attach-2.png" class="img-thumbnail" />-->
+<!--										</a>-->
+<!--										-->
+<!--										<a href="#" class="name">-->
+<!--											IMG_008.jpg-->
+<!--											<span>12KB</span>-->
+<!--										</a>-->
+<!--										-->
+<!--										<div class="links">-->
+<!--											<a href="#">View</a> - -->
+<!--											<a href="#">Download</a>-->
+<!--										</div>-->
+<!--									</li>-->
+<!--								</ul>-->
+<!--							</div>-->
+							
+<!--							<div class="mail-single-reply">-->
+<!--								-->
+<!--								<div class="fake-form">-->
+<!--									<div>-->
+<!--										<a href="../extra-portlets.html">Reply</a> or <a href="../extra-portlets.html">Forward</a> this message...-->
+<!--									</div>-->
+<!--								</div>-->
+<!--								-->
+<!--							</div>-->
+							
+						</div>
+						
+						
+					</div>
+					
+					<!-- Mailbox Sidebar -->
+<!--					<div class="col-sm-3 mailbox-left">-->
+<!--						-->
+<!--						<div class="mailbox-sidebar">-->
+<!--							-->
+<!--							<a href="../templates/mailbox-compose.html" class="btn btn-block btn-secondary btn-icon btn-icon-standalone btn-icon-standalone-right">-->
+<!--								<i class="linecons-mail"></i>-->
+<!--								<span>Compose</span>-->
+<!--							</a>-->
+<!--							-->
+<!--							-->
+<!--							<ul class="list-unstyled mailbox-list">-->
+<!--								<li class="active">-->
+<!--									<a href="#">-->
+<!--										Inbox-->
+<!--										<span class="badge badge-success pull-right">5</span>-->
+<!--									</a>-->
+<!--								</li>-->
+<!--								<li>-->
+<!--									<a href="#">-->
+<!--										Sent-->
+<!--									</a>-->
+<!--								</li>-->
+<!--								<li>-->
+<!--									<a href="#">-->
+<!--										Drafts-->
+<!--									</a>-->
+<!--								</li>-->
+<!--								<li>-->
+<!--									<a href="#">-->
+<!--										Spam-->
+<!--										<span class="badge badge-purple pull-right">2</span>-->
+<!--									</a>-->
+<!--								</li>-->
+<!--								<li>-->
+<!--									<a href="#">-->
+<!--										Trash-->
+<!--									</a>-->
+<!--								</li>-->
+<!--							</ul>-->
+<!--							-->
+<!--							<div class="vspacer"></div>-->
+<!--							-->
+<!--							<ul class="list-unstyled mailbox-list">-->
+<!--								<li class="list-header">Filter by tags</li>-->
+<!--								<li>-->
+<!--									<a href="#">-->
+<!--										ThemeForest-->
+<!--										<span class="badge badge-success badge-roundless pull-right upper">Envato</span>-->
+<!--									</a>-->
+<!--								</li>-->
+<!--								<li>-->
+<!--									<a href="#">-->
+<!--										Society-->
+<!--										<span class="badge badge-red badge-roundless pull-right upper">Friends</span>-->
+<!--									</a>-->
+<!--								</li>-->
+<!--								<li>-->
+<!--									<a href="#">-->
+<!--										Work-->
+<!--										<span class="badge badge-warning badge-roundless pull-right upper">Google</span>-->
+<!--									</a>-->
+<!--								</li>-->
+<!--							</ul>-->
+<!--							-->
+<!--						</div>-->
+<!--						-->
+<!--					</div>-->
+					
+				</div>
+				
+			</section>
+			<!-- Main Footer -->
+			<!-- Choose between footer styles: "footer-type-1" or "footer-type-2" -->
+			<!-- Add class "sticky" to  always stick the footer to the end of page (if page contents is small) -->
+			<!-- Or class "fixed" to  always fix the footer to the end of page -->
+			<div th:replace="common/common :: main-footer"></div>
+		</div>
+
+		<!-- start: Chat Section -->
+		<div th:replace="common/common :: chat"></div>
+		<!-- end: Chat Section -->
+		
+	</div>
+
+	<!-- Bottom Scripts -->
+	<div th:replace="common/common :: commonScript"></div>
+
+</body>
+</html>

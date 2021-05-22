@@ -11,13 +11,14 @@ import org.springframework.web.bind.annotation.GetMapping;
  */
 @Controller
 public class EchartsController {
-    @GetMapping("/echart")
+    @GetMapping("/barDiffAlgorithm")
     public String toChartHTML() {
-        return "chart/charttest";
+        return "chart/barDiffAlgorithm";
     }
 
     @GetMapping("/LineChartFeature")
     public String toLineChartFeature(){
         return "chart/LineChartFeature";
     }
+
 }

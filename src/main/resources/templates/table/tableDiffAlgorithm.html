@@ -41,29 +41,73 @@
                         <table class="table table-bordered table-striped  table-hover">
                             <thead>
                             <tr>
-                                <th></th>
-                                <th>Name</th>
-                                <th>Address</th>
+                                <th>模型</th>
+                                <th>类别</th>
+                                <th>总数</th>
+                                <th>判为Spam</th>
+                                <th>判为Ham</th>
+                                <th>准确率</th>
+                                <th>查准率</th>
+                                <th>召回率</th>
+                                <th>F1-Score</th>
                             </tr>
                             </thead>
 
                             <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>Arlind</td>
-                                <td>Nushi</td>
-                            </tr>
-
-                            <tr>
-                                <td>2</td>
-                                <td>Art</td>
-                                <td>Ramadani</td>
-                            </tr>
-
-                            <tr>
-                                <td>3</td>
-                                <td>Filan</td>
-                                <td>Fisteku</td>
+                            <tr th:each="evaluationAlgorithm:${evaluationAlgorithms}">
+                                <td th:text="${evaluationAlgorithm.id}"></td>
+                                <td>
+                                    <table>
+                                        <tbody>
+                                            <tr>
+                                                <td th:text="${evaluationAlgorithm.spamTag}"></td>
+                                            </tr>
+                                            <tr>
+                                                <td th:text="${evaluationAlgorithm.hamTag}"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                                <td>
+                                    <table>
+                                        <tbody>
+                                        <tr>
+                                            <td th:text="${evaluationAlgorithm.totalNumSpam}"></td>
+                                        </tr>
+                                        <tr>
+                                            <td th:text="${evaluationAlgorithm.totalNumHam}"></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                                <td>
+                                    <table>
+                                        <tbody>
+                                        <tr>
+                                            <td th:text="${evaluationAlgorithm.tp}"></td>
+                                        </tr>
+                                        <tr>
+                                            <td th:text="${evaluationAlgorithm.fp}"></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                                <td>
+                                    <table>
+                                        <tbody>
+                                        <tr>
+                                            <td th:text="${evaluationAlgorithm.fn}"></td>
+                                        </tr>
+                                        <tr>
+                                            <td th:text="${evaluationAlgorithm.tn}"></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                                <td th:text="${evaluationAlgorithm.accuracy}"></td>
+                                <td th:text="${evaluationAlgorithm.pre}"></td>
+                                <td th:text="${evaluationAlgorithm.recall}"></td>
+                                <td th:text="${evaluationAlgorithm.f1}"></td>
                             </tr>
                             </tbody>
                         </table>
@@ -74,18 +118,18 @@
     </div>
 </div>
 
-<!--发送请求，从数据库中读到数据-->
-<script type="text/javascript">
-    $(function (){
-        $.ajax({
-            url:"/evaluation",
-            type:"GET",
-            success:function (data){
+<!--&lt;!&ndash;发送请求，从数据库中读到数据&ndash;&gt;-->
+<!--<script type="text/javascript">-->
+<!--    $(function (){-->
+<!--        $.ajax({-->
+<!--            url:"/evaluationAlgTable",-->
+<!--            type:"GET",-->
+<!--            success:function (data){-->
 
-            }
-        })
-    })
-</script>
+<!--            }-->
+<!--        })-->
+<!--    })-->
+<!--</script>-->
 
 <!-- Bottom Scripts -->
 <div th:replace="common/common :: commonScript"></div>

@@ -1,6 +1,8 @@
 package com.example.demo.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.example.demo.extend.diffrentDataset.MySpamTrain_TFIDF_SMS;
+import com.example.demo.extend.diffrentDataset.MySpamTrain_TFIDF_TREC;
 import com.example.demo.mapper.EvaluationDatasetMapper;
 import com.example.demo.mapper.EvaluationFeatureMapper;
 import com.example.demo.pojo.EvaluationDataset;
@@ -22,11 +24,26 @@ import java.util.List;
 public class EvaluationDatasetServiceImpl extends ServiceImpl<EvaluationDatasetMapper, EvaluationDataset> implements EvaluationDatasetService {
     @Autowired
     EvaluationDatasetMapper evaluationDatasetMapper;
-
+    @Autowired
+    MySpamTrain_TFIDF_SMS SMSService;
+    @Autowired
+    MySpamTrain_TFIDF_TREC TRECService;
 
     @Override
     public List<EvaluationDataset> getEvaluationDataset() {
         List<EvaluationDataset> evaluationDatasets = evaluationDatasetMapper.selectList(null);
         return evaluationDatasets;
     }
+
+    @Override
+    public void trainAndPreDataTREC() {
+        TRECService.trainAndPre();
+    }
+
+    @Override
+    public void trainAndPreDataSMS() {
+        SMSService.trainAndPre();
+    }
+
+
 }

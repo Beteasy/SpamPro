@@ -64,8 +64,7 @@ public static ArrayList<ArrayList<String>> getKeyWordsList(ArrayList<ArrayList<S
 //        System.out.println(stopWordsList);
         //去除停词----需要遍历去除，直接去不了
         for (int i=0; i<wordsList.size(); i++){
-//            System.out.println(i+"包含:"+wordsList.contains(stopWordsList));
-//            System.out.println(wordsList.get(i));
+            System.out.println("移除第"+i+"封邮件停用词");
             wordsList.get(i).removeAll(stopWordsList);
 //            System.out.println(wordsList.get(i));
             //过滤掉长度为1和长度超过12的词组

@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta name="description" content="Xenon Boostrap Admin Panel" />
+	<meta name="author" content="" />
+	
+	<title>Xenon - Mailbox</title>
+
+	<div th:replace="common/common :: commonHeader"></div>
+	
+	
+</head>
+<body class="page-body">
+
+	<div th:replace="common/common :: settings-pane"></div>
+	
+	<div class="page-container"><!-- add class "sidebar-collapsed" to close sidebar by default, "chat-visible" to make chat appear always -->
+			
+		<!-- Add "fixed" class to make the sidebar fixed always to the browser viewport. -->
+		<!-- Adding class "toggle-others" will keep only one menu item open at a time. -->
+		<!-- Adding class "collapsed" collapse sidebar root elements and show only icons. -->
+		<div th:replace="common/common :: sidebar-menu"></div>
+		
+		<div class="main-content">
+					
+			<!-- User Info, Notifications and Menu Bar -->
+			<div th:replace="common/common ::user-info-navbar"></div>
+			<div class="page-title">
+				
+				<div class="title-env">
+					<h1 class="title">检测记录</h1>
+					<p class="description">邮件检测历史记录</p>
+				</div>
+				
+<!--					<div class="breadcrumb-env">-->
+<!--					-->
+<!--								<ol class="breadcrumb bc-1">-->
+<!--									<li>-->
+<!--							<a href="../templates/dashboard-1.html"><i class="fa-home"></i>Home</a>-->
+<!--						</li>-->
+<!--								<li>-->
+<!--						-->
+<!--										<a href="mailbox-main.html">Mailbox</a>-->
+<!--								</li>-->
+<!--							<li class="active">-->
+<!--						-->
+<!--										<strong>Inbox</strong>-->
+<!--								</li>-->
+<!--								</ol>-->
+<!--								-->
+<!--				</div>-->
+					
+			</div>
+			
+			<section class="mailbox-env">
+				<div class="panel panel-default">
+<!--					<div class="panel-heading">-->
+<!--						<h3 class="panel-title">Removing search and results count filter</h3>-->
+
+<!--						<div class="panel-options">-->
+<!--							<a href="#" data-toggle="panel">-->
+<!--								<span class="collapse-icon">&ndash;</span>-->
+<!--								<span class="expand-icon">+</span>-->
+<!--							</a>-->
+<!--							<a href="#" data-toggle="remove">-->
+<!--								&times;-->
+<!--							</a>-->
+<!--						</div>-->
+<!--					</div>-->
+					<div class="panel-body">
+
+						<script type="text/javascript">
+							jQuery(document).ready(function($)
+							{
+								$("#example-2").dataTable({
+									dom: "t" + "<'row'<'col-xs-6'i><'col-xs-6'p>>",
+									aoColumns: [
+										{bSortable: false},
+										null,
+										null,
+										null,
+										null
+									],
+								});
+
+								// Replace checkboxes when they appear
+								var $state = $("#example-2 thead input[type='checkbox']");
+
+								$("#example-2").on('draw.dt', function()
+								{
+									cbr_replace();
+
+									$state.trigger('change');
+								});
+
+								// Script to select all checkboxes
+								$state.on('change', function(ev)
+								{
+									var $chcks = $("#example-2 tbody input[type='checkbox']");
+
+									if($state.is(':checked'))
+									{
+										$chcks.prop('checked', true).trigger('change');
+									}
+									else
+									{
+										$chcks.prop('checked', false).trigger('change');
+									}
+								});
+							});
+						</script>
+
+						<table class="table table-bordered table-striped" id="example-2">
+							<thead>
+							<tr>
+								<th class="no-sorting">
+<!--									<input type="checkbox" class="cbr">-->
+								</th>
+<!--								<th>编号</th>-->
+								<th>标题</th>
+								<th>类型</th>
+								<th>检查时间</th>
+								<th>操作</th>
+							</tr>
+							</thead>
+							<tbody class="middle-align">
+
+							<tr th:each="checkRecord:${checkRecords}">
+								<td>
+									<input type="checkbox" class="cbr">
+								</td>
+								<td ><a th:utext="${checkRecord.title}" th:href="@{'/toMailDetail?id='+${checkRecord.id}}" style="color: #979898"></a></td>
+								<td th:text="${checkRecord.type}"></td>
+								<td th:text="${checkRecord.checkTime}"></td>
+								<td>
+<!--									<a href="#" class="btn btn-secondary btn-sm btn-icon icon-left">-->
+<!--										Edit-->
+<!--									</a>-->
+									<a href="javascript:;" onclick="showAjaxModal();" class="btn btn-secondary btn-sm btn-icon icon-left">
+										Edit
+									</a>
+									<!-- Modal 7 (Ajax Modal)-->
+									<div class="modal fade" id="modal-7">
+										<div class="modal-dialog" style="z-index: 20410;">
+											<div class="modal-content">
+
+												<div class="modal-header">
+													<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+													<h4 class="modal-title">修改邮件类别</h4>
+												</div>
+
+												<div class="modal-body">
+
+													Content is loading...
+
+												</div>
+
+												<div class="modal-footer">
+													<button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
+													<button type="button" class="btn btn-info">Save changes</button>
+												</div>
+											</div>
+										</div>
+									</div>
+									<script type="text/javascript">
+										function showAjaxModal()
+										{
+											// jQuery('#modal-7').modal('show');
+											jQuery('#modal-7').modal('show', {backdrop: 'static'});
+
+											// jQuery.ajax({
+											// 	url: "data/ajax-content.txt",
+											// 	success: function(response)
+											// 	{
+											// 		jQuery('#modal-7 .modal-body').html(response);
+											// 	}
+											// });
+										}
+									</script>
+
+<!--									<a href="javascript:;" onclick="showAjaxModal();" class="btn btn-primary btn-single btn-sm">Show Me</a>-->
+
+									<a th:href="@{'/deleteRecord?id='+${checkRecord.id}}" class="btn btn-danger btn-sm btn-icon icon-left">
+										Delete
+									</a>
+<!--									<a href="#" class="btn btn-info btn-sm btn-icon icon-left">-->
+<!--										Profile-->
+<!--									</a>-->
+								</td>
+							</tr>
+							</tbody>
+						</table>
+
+<!--						发请求，进行分页查询-->
+						<script type="text/javascript">
+							// $(document).ready(function (){
+							// 	$.ajax({
+							// 		url: "/mailbox-main",
+							// 		type:"GET",
+							// 		data:{"currentPage":1,"limit":2},
+							// 		success:function (data){
+							// 			// 暂时不做处理
+							// 		}
+							// 	})
+							// })
+							// function selectPage(index){
+							// 	$.ajax()
+							// }
+						</script>
+
+<!--						分页按钮-->
+						<div class="panel-body">
+							<ul class="pagination" th:with="liSize=${pages}">
+								<li><a href="#"><i class="fa-angle-left"></i></a></li>
+<!--								这里的页码数应该根据从该数据库返回的来算-->
+								<li th:each="index:${#numbers.sequence(1,liSize)}"><a th:href="@{'/mailbox-main?currentPage='+${index}+'&limit=5'}" th:text="${index}"></a></li>
+								<li><a href="#"><i class="fa-angle-right"></i></a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+
+
+				<!--				<div class="row">-->
+<!--					-->
+<!--					&lt;!&ndash; Inbox emails &ndash;&gt;-->
+<!--					<div class="col-sm-9 mailbox-right">-->
+<!--						-->
+<!--						<div class="mail-env">-->
+<!--						-->
+<!--							<script type="text/javascript">-->
+<!--								jQuery(document).ready(function($)-->
+<!--								{-->
+<!--									var $state = $(".mail-table thead input[type='checkbox'], .mail-table tfoot input[type='checkbox']"),-->
+<!--										$chcks = $(".mail-table tbody input[type='checkbox']");-->
+<!--									-->
+<!--									// Script to select all checkboxes-->
+<!--									$state.on('change', function(ev)-->
+<!--									{-->
+<!--										if($state.is(':checked'))-->
+<!--										{-->
+<!--											$chcks.prop('checked', true).trigger('change');-->
+<!--										}-->
+<!--										else-->
+<!--										{-->
+<!--											$chcks.prop('checked', false).trigger('change');-->
+<!--										}-->
+<!--									});-->
+<!--									-->
+<!--									// Row Highlighting-->
+<!--									$chcks.each(function(i, el)-->
+<!--									{-->
+<!--										var $tr = $(el).closest('tr');-->
+<!--										-->
+<!--										$(this).on('change', function(ev)-->
+<!--										{-->
+<!--											$tr[$(this).is(':checked') ? 'addClass' : 'removeClass']('highlighted');-->
+<!--										});-->
+<!--									});-->
+<!--									-->
+<!--									// Stars-->
+<!--									$(".mail-table .star").on('click', function(ev)-->
+<!--									{-->
+<!--										ev.preventDefault();-->
+<!--										-->
+<!--										if( ! $(this).hasClass('starred'))-->
+<!--										{-->
+<!--											$(this).addClass('starred').find('i').attr('class', 'fa-star');-->
+<!--										}-->
+<!--										else-->
+<!--										{-->
+<!--											$(this).removeClass('starred').find('i').attr('class', 'fa-star-empty');-->
+<!--										}-->
+<!--									});-->
+<!--								});-->
+<!--							</script>-->
+<!--						-->
+<!--							&lt;!&ndash; mail table &ndash;&gt;-->
+<!--							<table class="table mail-table">-->
+<!--							-->
+<!--								&lt;!&ndash; mail table header &ndash;&gt;-->
+<!--								<thead>-->
+<!--									<tr>-->
+<!--										<th class="col-cb">-->
+<!--											<input type="checkbox" class="cbr" />-->
+<!--										</th>-->
+<!--										<th colspan="4" class="col-header-options">-->
+<!--											-->
+<!--											<div class="mail-select-options">Select all</div>-->
+<!--											-->
+<!--											<div class="mail-pagination">-->
+<!--												Showing <strong>1 to 30</strong> of <strong>789</strong> emails-->
+<!--												-->
+<!--												<div class="next-prev">-->
+<!--													<a href="#"><i class="fa-angle-left"></i></a>-->
+<!--													<a href="#"><i class="fa-angle-right"></i></a>-->
+<!--												</div>-->
+<!--											</div>-->
+<!--										</th>-->
+<!--									</tr>-->
+<!--								</thead>-->
+<!--							-->
+<!--								&lt;!&ndash; mail table footer &ndash;&gt;-->
+<!--								<tfoot>-->
+<!--									<tr>-->
+<!--										<th class="col-cb">-->
+<!--											<input type="checkbox" class="cbr" />-->
+<!--										</th>-->
+<!--										<th colspan="4" class="col-header-options">-->
+<!--											-->
+<!--											<div class="mail-select-options">Select all</div>-->
+<!--											-->
+<!--											<div class="mail-pagination">-->
+<!--												Showing <strong>1 to 30</strong> of <strong>789</strong> emails-->
+<!--												-->
+<!--												<div class="next-prev">-->
+<!--													<a href="#"><i class="fa-angle-left"></i></a>-->
+<!--													<a href="#"><i class="fa-angle-right"></i></a>-->
+<!--												</div>-->
+<!--											</div>-->
+<!--										</th>-->
+<!--									</tr>-->
+<!--								</tfoot>-->
+<!--								-->
+<!--								&lt;!&ndash; email list &ndash;&gt;-->
+<!--								<tbody>-->
+<!--									-->
+<!--									<tr class="unread">-->
+<!--										<td class="col-cb">-->
+<!--											<div class="checkbox checkbox-replace">-->
+<!--												<input type="checkbox" class="cbr" />-->
+<!--											</div>-->
+<!--										</td>-->
+<!--										<td class="col-name">-->
+<!--											<a href="#" class="star">-->
+<!--												<i class="fa-star-empty"></i>-->
+<!--											</a>-->
+<!--											<a href="../mailbox-message.html" class="col-name">Google AdWords</a>-->
+<!--										</td>-->
+<!--										<td class="col-subject">-->
+<!--											<a href="../mailbox-message.html">-->
+<!--												Google AdWords: Ads not serving-->
+<!--											</a>-->
+<!--										</td>-->
+<!--										<td class="col-options hidden-sm hidden-xs"></td>-->
+<!--										<td class="col-time">08:40</td>-->
+<!--									</tr>-->
+<!--									-->
+<!--									<tr class="unread">&lt;!&ndash; new email class: unread &ndash;&gt;-->
+<!--										<td class="col-cb">-->
+<!--											<div class="checkbox checkbox-replace">-->
+<!--												<input type="checkbox" class="cbr" />-->
+<!--											</div>-->
+<!--										</td>-->
+<!--										<td class="col-name">-->
+<!--											<a href="#" class="star starred">-->
+<!--												<i class="fa-star"></i>-->
+<!--											</a>-->
+<!--											<a href="../mailbox-message.html" class="col-name">Facebook</a>-->
+<!--										</td>-->
+<!--										<td class="col-subject">-->
+<!--											<a href="../mailbox-message.html">-->
+<!--												Reset your account password-->
+<!--											</a>-->
+<!--										</td>-->
+<!--										<td class="col-options hidden-sm hidden-xs">-->
+<!--											<a href="../mailbox-message.html"><i class="linecons-attach"></i></a>-->
+<!--										</td>-->
+<!--										<td class="col-time">11:17</td>-->
+<!--									</tr>-->
+<!--									-->
+<!--									<tr>-->
+<!--										<td class="col-cb">-->
+<!--											<div class="checkbox checkbox-replace">-->
+<!--												<input type="checkbox" class="cbr" />-->
+<!--											</div>-->
+<!--										</td>-->
+<!--										<td class="col-name">-->
+<!--											<a href="#" class="star">-->
+<!--												<i class="fa-star-empty"></i>-->
+<!--											</a>-->
+<!--											<a href="../mailbox-message.html" class="col-name">Apple.com</a>-->
+<!--										</td>-->
+<!--										<td class="col-subject">-->
+<!--											<a href="../mailbox-message.html">-->
+<!--												<span class="label label-danger">Business</span>-->
+<!--												Your apple account ID has been accessed from un-familiar location.-->
+<!--											</a>-->
+<!--										</td>-->
+<!--										<td class="col-options hidden-sm hidden-xs"></td>-->
+<!--										<td class="col-time">Today</td>-->
+<!--									</tr>-->
+<!--									-->
+<!--									<tr>-->
+<!--										<td class="col-cb">-->
+<!--											<div class="checkbox checkbox-replace">-->
+<!--												<input type="checkbox" class="cbr" />-->
+<!--											</div>-->
+<!--										</td>-->
+<!--										<td class="col-name">-->
+<!--											<a href="#" class="star">-->
+<!--												<i class="fa-star-empty"></i>-->
+<!--											</a>-->
+<!--											<a href="../mailbox-message.html" class="col-name">World Weather Online</a>-->
+<!--										</td>-->
+<!--										<td class="col-subject">-->
+<!--											<a href="../mailbox-message.html">-->
+<!--												Over Throttle Alert-->
+<!--											</a>-->
+<!--										</td>-->
+<!--										<td class="col-options hidden-sm hidden-xs">-->
+<!--											<a href="../mailbox-message.html"><i class="linecons-attach"></i></a>-->
+<!--										</td>-->
+<!--										<td class="col-time">Yesterday</td>-->
+<!--									</tr>-->
+<!--									-->
+<!--									<tr>-->
+<!--										<td class="col-cb">-->
+<!--											<div class="checkbox checkbox-replace">-->
+<!--												<input type="checkbox" class="cbr" />-->
+<!--											</div>-->
+<!--										</td>-->
+<!--										<td class="col-name">-->
+<!--											<a href="#" class="star">-->
+<!--												<i class="fa-star-empty"></i>-->
+<!--											</a>-->
+<!--											<a href="../mailbox-message.html" class="col-name">Dropbox</a>-->
+<!--										</td>-->
+<!--										<td class="col-subject">-->
+<!--											<a href="../mailbox-message.html">-->
+<!--												Complete your Dropbox setup!-->
+<!--											</a>-->
+<!--										</td>-->
+<!--										<td class="col-options hidden-sm hidden-xs"></td>-->
+<!--										<td class="col-time">4 Dec</td>-->
+<!--									</tr>-->
+<!--									-->
+<!--									<tr>-->
+<!--										<td class="col-cb">-->
+<!--											<div class="checkbox checkbox-replace">-->
+<!--												<input type="checkbox" class="cbr" />-->
+<!--											</div>-->
+<!--										</td>-->
+<!--										<td class="col-name">-->
+<!--											<a href="#" class="star starred">-->
+<!--												<i class="fa-star"></i>-->
+<!--											</a>-->
+<!--											<a href="../mailbox-message.html" class="col-name">Arlind Nushi</a>-->
+<!--										</td>-->
+<!--										<td class="col-subject">-->
+<!--											<a href="../mailbox-message.html">-->
+<!--												<span class="label label-warning">Friends</span>-->
+<!--												Work progress for Neon Project-->
+<!--											</a>-->
+<!--										</td>-->
+<!--										<td class="col-options hidden-sm hidden-xs"></td>-->
+<!--										<td class="col-time">28 Nov</td>-->
+<!--									</tr>-->
+<!--									-->
+<!--									<tr>&lt;!&ndash; new email class: unread &ndash;&gt;-->
+<!--										<td class="col-cb">-->
+<!--											<div class="checkbox checkbox-replace">-->
+<!--												<input type="checkbox" class="cbr" />-->
+<!--											</div>-->
+<!--										</td>-->
+<!--										<td class="col-name">-->
+<!--											<a href="#" class="star starred">-->
+<!--												<i class="fa-star"></i>-->
+<!--											</a>-->
+<!--											<a href="../mailbox-message.html" class="col-name">Jose D. Gardner</a>-->
+<!--										</td>-->
+<!--										<td class="col-subject">-->
+<!--											<a href="../mailbox-message.html">-->
+<!--												Regarding to your website issues.-->
+<!--											</a>-->
+<!--										</td>-->
+<!--										<td class="col-options hidden-sm hidden-xs">-->
+<!--											<a href="../mailbox-message.html"><i class="linecons-attach"></i></a>-->
+<!--										</td>-->
+<!--										<td class="col-time">22 Nov</td>-->
+<!--									</tr>-->
+<!--									-->
+<!--									<tr>-->
+<!--										<td class="col-cb">-->
+<!--											<div class="checkbox checkbox-replace">-->
+<!--												<input type="checkbox" class="cbr" />-->
+<!--											</div>-->
+<!--										</td>-->
+<!--										<td class="col-name">-->
+<!--											<a href="#" class="star">-->
+<!--												<i class="fa-star-empty"></i>-->
+<!--											</a>-->
+<!--											<a href="../mailbox-message.html" class="col-name">Aurelio D. Cummins</a>-->
+<!--										</td>-->
+<!--										<td class="col-subject">-->
+<!--											<a href="../mailbox-message.html">-->
+<!--												Steadicam operator-->
+<!--											</a>-->
+<!--										</td>-->
+<!--										<td class="col-options hidden-sm hidden-xs"></td>-->
+<!--										<td class="col-time">15 Nov</td>-->
+<!--									</tr>-->
+<!--									-->
+<!--									<tr>-->
+<!--										<td class="col-cb">-->
+<!--											<div class="checkbox checkbox-replace">-->
+<!--												<input type="checkbox" class="cbr" />-->
+<!--											</div>-->
+<!--										</td>-->
+<!--										<td class="col-name">-->
+<!--											<a href="#" class="star">-->
+<!--												<i class="fa-star-empty"></i>-->
+<!--											</a>-->
+<!--											<a href="../mailbox-message.html" class="col-name">Filan Fisteku</a>-->
+<!--										</td>-->
+<!--										<td class="col-subject">-->
+<!--											<a href="../mailbox-message.html">-->
+<!--												You are loosing clients because your website is not responsive.-->
+<!--											</a>-->
+<!--										</td>-->
+<!--										<td class="col-options hidden-sm hidden-xs"></td>-->
+<!--										<td class="col-time">02 Nov</td>-->
+<!--									</tr>-->
+<!--									-->
+<!--									<tr>-->
+<!--										<td class="col-cb">-->
+<!--											<div class="checkbox checkbox-replace">-->
+<!--												<input type="checkbox" class="cbr" />-->
+<!--											</div>-->
+<!--										</td>-->
+<!--										<td class="col-name">-->
+<!--											<a href="#" class="star">-->
+<!--												<i class="fa-star-empty"></i>-->
+<!--											</a>-->
+<!--											<a href="../mailbox-message.html" class="col-name">Instagram</a>-->
+<!--										</td>-->
+<!--										<td class="col-subject">-->
+<!--											<a href="../mailbox-message.html">-->
+<!--												Instagram announces the new video uploadin feature.-->
+<!--											</a>-->
+<!--										</td>-->
+<!--										<td class="col-options hidden-sm hidden-xs">-->
+<!--											<a href="../mailbox-message.html"><i class="linecons-attach"></i></a>-->
+<!--										</td>-->
+<!--										<td class="col-time">26 Oct</td>-->
+<!--									</tr>-->
+<!--									-->
+<!--									<tr>-->
+<!--										<td class="col-cb">-->
+<!--											<div class="checkbox checkbox-replace">-->
+<!--												<input type="checkbox" class="cbr" />-->
+<!--											</div>-->
+<!--										</td>-->
+<!--										<td class="col-name">-->
+<!--											<a href="#" class="star">-->
+<!--												<i class="fa-star-empty"></i>-->
+<!--											</a>-->
+<!--											<a href="../mailbox-message.html" class="col-name">James Blue</a>-->
+<!--										</td>-->
+<!--										<td class="col-subject">-->
+<!--											<a href="../mailbox-message.html">-->
+<!--												<span class="label label-success">Envato</span>-->
+<!--												There are 20 notifications-->
+<!--											</a>-->
+<!--										</td>-->
+<!--										<td class="col-options hidden-sm hidden-xs"></td>-->
+<!--										<td class="col-time">18 Oct</td>-->
+<!--									</tr>-->
+<!--									-->
+<!--									<tr>-->
+<!--										<td class="col-cb">-->
+<!--											<div class="checkbox checkbox-replace">-->
+<!--												<input type="checkbox" class="cbr" />-->
+<!--											</div>-->
+<!--										</td>-->
+<!--										<td class="col-name">-->
+<!--											<a href="#" class="star">-->
+<!--												<i class="fa-star-empty"></i>-->
+<!--											</a>-->
+<!--											<a href="../mailbox-message.html" class="col-name">SomeHost</a>-->
+<!--										</td>-->
+<!--										<td class="col-subject">-->
+<!--											<a href="../mailbox-message.html">-->
+<!--												Bugs in your system.-->
+<!--											</a>-->
+<!--										</td>-->
+<!--										<td class="col-options hidden-sm hidden-xs"></td>-->
+<!--										<td class="col-time">01 Sep</td>-->
+<!--									</tr>-->
+<!--									-->
+<!--									<tr>&lt;!&ndash; new email class: unread &ndash;&gt;-->
+<!--										<td class="col-cb">-->
+<!--											<div class="checkbox checkbox-replace">-->
+<!--												<input type="checkbox" class="cbr" />-->
+<!--											</div>-->
+<!--										</td>-->
+<!--										<td class="col-name">-->
+<!--											<a href="#" class="star starred">-->
+<!--												<i class="fa-star"></i>-->
+<!--											</a>-->
+<!--											<a href="../mailbox-message.html" class="col-name">Facebook</a>-->
+<!--										</td>-->
+<!--										<td class="col-subject">-->
+<!--											<a href="../mailbox-message.html">-->
+<!--												Reset your account password-->
+<!--											</a>-->
+<!--										</td>-->
+<!--										<td class="col-options hidden-sm hidden-xs">-->
+<!--											<a href="../mailbox-message.html"><i class="linecons-attach"></i></a>-->
+<!--										</td>-->
+<!--										<td class="col-time">13:52</td>-->
+<!--									</tr>-->
+<!--									-->
+<!--									<tr>-->
+<!--										<td class="col-cb">-->
+<!--											<div class="checkbox checkbox-replace">-->
+<!--												<input type="checkbox" class="cbr" />-->
+<!--											</div>-->
+<!--										</td>-->
+<!--										<td class="col-name">-->
+<!--											<a href="#" class="star">-->
+<!--												<i class="fa-star-empty"></i>-->
+<!--											</a>-->
+<!--											<a href="../mailbox-message.html" class="col-name">Google AdWords</a>-->
+<!--										</td>-->
+<!--										<td class="col-subject">-->
+<!--											<a href="../mailbox-message.html">-->
+<!--												Google AdWords: Ads not serving-->
+<!--											</a>-->
+<!--										</td>-->
+<!--										<td class="col-options hidden-sm hidden-xs"></td>-->
+<!--										<td class="col-time">09:27</td>-->
+<!--									</tr>-->
+<!--									-->
+<!--									<tr>-->
+<!--										<td class="col-cb">-->
+<!--											<div class="checkbox checkbox-replace">-->
+<!--												<input type="checkbox" class="cbr" />-->
+<!--											</div>-->
+<!--										</td>-->
+<!--										<td class="col-name">-->
+<!--											<a href="#" class="star">-->
+<!--												<i class="fa-star-empty"></i>-->
+<!--											</a>-->
+<!--											<a href="../mailbox-message.html" class="col-name">Apple.com</a>-->
+<!--										</td>-->
+<!--										<td class="col-subject">-->
+<!--											<a href="../mailbox-message.html">-->
+<!--												<span class="label label-danger">Business</span>-->
+<!--												Your apple account ID has been accessed from un-familiar location.-->
+<!--											</a>-->
+<!--										</td>-->
+<!--										<td class="col-options hidden-sm hidden-xs"></td>-->
+<!--										<td class="col-time">Today</td>-->
+<!--									</tr>-->
+<!--									-->
+<!--									<tr>-->
+<!--										<td class="col-cb">-->
+<!--											<div class="checkbox checkbox-replace">-->
+<!--												<input type="checkbox" class="cbr" />-->
+<!--											</div>-->
+<!--										</td>-->
+<!--										<td class="col-name">-->
+<!--											<a href="#" class="star">-->
+<!--												<i class="fa-star-empty"></i>-->
+<!--											</a>-->
+<!--											<a href="../mailbox-message.html" class="col-name">World Weather Online</a>-->
+<!--										</td>-->
+<!--										<td class="col-subject">-->
+<!--											<a href="../mailbox-message.html">-->
+<!--												Over Throttle Alert-->
+<!--											</a>-->
+<!--										</td>-->
+<!--										<td class="col-options hidden-sm hidden-xs">-->
+<!--											<a href="../mailbox-message.html"><i class="linecons-attach"></i></a>-->
+<!--										</td>-->
+<!--										<td class="col-time">Yesterday</td>-->
+<!--									</tr>-->
+<!--									-->
+<!--									<tr>-->
+<!--										<td class="col-cb">-->
+<!--											<div class="checkbox checkbox-replace">-->
+<!--												<input type="checkbox" class="cbr" />-->
+<!--											</div>-->
+<!--										</td>-->
+<!--										<td class="col-name">-->
+<!--											<a href="#" class="star">-->
+<!--												<i class="fa-star-empty"></i>-->
+<!--											</a>-->
+<!--											<a href="../mailbox-message.html" class="col-name">Dropbox</a>-->
+<!--										</td>-->
+<!--										<td class="col-subject">-->
+<!--											<a href="../mailbox-message.html">-->
+<!--												Complete your Dropbox setup!-->
+<!--											</a>-->
+<!--										</td>-->
+<!--										<td class="col-options hidden-sm hidden-xs"></td>-->
+<!--										<td class="col-time">4 Dec</td>-->
+<!--									</tr>-->
+<!--									-->
+<!--								</tbody>-->
+<!--								-->
+<!--							</table>-->
+<!--							-->
+<!--						</div>-->
+<!--						-->
+<!--					</div>-->
+<!--					-->
+<!--					&lt;!&ndash; Mailbox Sidebar &ndash;&gt;-->
+<!--					<div class="col-sm-3 mailbox-left">-->
+<!--						-->
+<!--						<div class="mailbox-sidebar">-->
+<!--							-->
+<!--							<a href="../templates/mailbox-compose.html" class="btn btn-block btn-secondary btn-icon btn-icon-standalone btn-icon-standalone-right">-->
+<!--								<i class="linecons-mail"></i>-->
+<!--								<span>Compose</span>-->
+<!--							</a>-->
+<!--							-->
+<!--							-->
+<!--							<ul class="list-unstyled mailbox-list">-->
+<!--								<li class="active">-->
+<!--									<a href="#">-->
+<!--										Inbox-->
+<!--										<span class="badge badge-success pull-right">5</span>-->
+<!--									</a>-->
+<!--								</li>-->
+<!--								<li>-->
+<!--									<a href="#">-->
+<!--										Sent-->
+<!--									</a>-->
+<!--								</li>-->
+<!--								<li>-->
+<!--									<a href="#">-->
+<!--										Drafts-->
+<!--									</a>-->
+<!--								</li>-->
+<!--								<li>-->
+<!--									<a href="#">-->
+<!--										Spam-->
+<!--										<span class="badge badge-purple pull-right">2</span>-->
+<!--									</a>-->
+<!--								</li>-->
+<!--								<li>-->
+<!--									<a href="#">-->
+<!--										Trash-->
+<!--									</a>-->
+<!--								</li>-->
+<!--							</ul>-->
+<!--							-->
+<!--							<div class="vspacer"></div>-->
+<!--							-->
+<!--							<ul class="list-unstyled mailbox-list">-->
+<!--								<li class="list-header">Filter by tags</li>-->
+<!--								<li>-->
+<!--									<a href="#">-->
+<!--										ThemeForest-->
+<!--										<span class="badge badge-success badge-roundless pull-right upper">Envato</span>-->
+<!--									</a>-->
+<!--								</li>-->
+<!--								<li>-->
+<!--									<a href="#">-->
+<!--										Society-->
+<!--										<span class="badge badge-red badge-roundless pull-right upper">Friends</span>-->
+<!--									</a>-->
+<!--								</li>-->
+<!--								<li>-->
+<!--									<a href="#">-->
+<!--										Work-->
+<!--										<span class="badge badge-warning badge-roundless pull-right upper">Google</span>-->
+<!--									</a>-->
+<!--								</li>-->
+<!--							</ul>-->
+<!--							-->
+<!--						</div>-->
+<!--						-->
+<!--					</div>-->
+<!--					-->
+<!--				</div>-->
+				
+			</section>
+			<!-- Main Footer -->
+			<!-- Choose between footer styles: "footer-type-1" or "footer-type-2" -->
+			<!-- Add class "sticky" to  always stick the footer to the end of page (if page contents is small) -->
+			<!-- Or class "fixed" to  always fix the footer to the end of page -->
+			<div th:replace="common/common :: main-footer"></div>
+		</div>
+		
+			
+		<!-- start: Chat Section -->
+		<div th:replace="common/common :: chat"></div>
+		<!-- end: Chat Section -->
+		
+		
+	</div>
+	
+	
+	
+
+
+
+	<!-- Bottom Scripts -->
+	<!-- JavaScripts initializations and stuff -->
+<div th:replace="common/common :: commonScript"></div>
+
+</body>
+</html>

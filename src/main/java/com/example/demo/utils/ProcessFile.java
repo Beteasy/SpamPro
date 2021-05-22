@@ -47,8 +47,6 @@ public class ProcessFile {
         return typeAndPathMap;
     }
 
-
-
 //    public static ArrayList<String> readFiles(String path){
 //        /**
 //         * @MethodName readFiles
@@ -96,13 +94,13 @@ public class ProcessFile {
 //        return mailList;
 //    }
 
-
     public static String readFile(String filePath) {
         /**
          * @MethodName readFile
          * @Description TODO   read one email and return as a string
          *                     if you read spam, pass the path of spam
          *                     if you read ham, pass the path of ham
+         *                     在读取的时候就把非中文字符全部删掉
          * @Author 21971
          * @param filePath
          * @Date 2021/1/30 12:42
@@ -122,9 +120,7 @@ public class ProcessFile {
             int flag = 0;
             while ((tmp = bufferedReader.readLine()) != null) {
                 if (flag == 1) {
-//                    System.out.println(tmp);
                     str.append(tmp);
-//                    System.out.println(str.toString());
                 }
                 if (tmp.equals("") || tmp.length() == 0) {
                     flag = 1;
@@ -135,30 +131,6 @@ public class ProcessFile {
             e.printStackTrace();
         }
         result = str.toString().replaceAll("\\s*","");
-//        System.out.println(result);
         return result;
     }
-
-
-//    public static ArrayList<String> getBody(ArrayList<String> mailList){
-//        /**
-//         * @MethodName getBody
-//         * @Description TODO   获取邮件正文内容
-//         * @Author 21971
-//         * @param mailList：获取到的全部邮件的完整内容列表
-//         * @Date 2021/1/26 15:43
-//         */
-//        ArrayList<String> bodyList =  new ArrayList<>();
-//        int i=1;
-//        for (String mail: mailList){
-//            //只匹配出现的第一个换行
-//            String[] str = mail.split("\n\n",2);
-//            //System.out.println("第"+i+"次打印:"+str[1]);
-//            //str[1]才是正文内
-//            //System.out.println("**************************body************************\n"+str[1]);
-//            bodyList.add(str[1]);
-//        }
-//        return bodyList;
-//    }
-
 }

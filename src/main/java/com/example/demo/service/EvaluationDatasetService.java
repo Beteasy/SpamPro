@@ -9,4 +9,8 @@ import java.util.List;
 
 public interface EvaluationDatasetService extends IService<EvaluationDataset> {
     List<EvaluationDataset> getEvaluationDataset();
+
+    void trainAndPreDataTREC();
+
+    void trainAndPreDataSMS();
 }
