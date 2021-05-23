@@ -139,17 +139,17 @@ public class TFIDFNBLRService {
         List<String> spamTopN = new ArrayList<>();
         List<String> hamTopN = new ArrayList<>();
         //选100个TF-IDF最大的出来
-        for(Map.Entry<String,Float> m : hamList){
+        for (Map.Entry<String, Float> m : hamList) {
 //            System.out.println(m.getKey()+"="+m.getValue());
             hamTopN.add(m.getKey());
-            if (hamTopN.size()==FEATURE_NUM/2){
+            if (hamTopN.size() == FEATURE_NUM / 2) {
                 break;
             }
         }
-        for(Map.Entry<String,Float> m : spamList){
+        for (Map.Entry<String, Float> m : spamList) {
 //            System.out.println(m.getKey()+"="+m.getValue());
             spamTopN.add(m.getKey());
-            if (spamTopN.size()==FEATURE_NUM/2){
+            if (spamTopN.size() == FEATURE_NUM / 2) {
                 break;
             }
         }
@@ -281,27 +281,27 @@ public class TFIDFNBLRService {
             System.out.println("预测文件名为：" + fileNameList[index++]);
             System.out.println("准确值:" + labeledPoint.label() + "\t预测值:" + predictValue);
             //先用贝叶斯进行预测，预测对了就直接统计，预测不对放到逻辑回归中在做一次
-            if (labeledPoint.label() == predictValue){
+            if (labeledPoint.label() == predictValue) {
                 //预测对了
                 if (labeledPoint.label() == 1.0 && predictValue == 1.0) {
                     //TP
                     TP++;
-                }else if (labeledPoint.label() == 0.0 && predictValue == 0.0) {
+                } else if (labeledPoint.label() == 0.0 && predictValue == 0.0) {
                     TN++;
                 }
-            }else {
+            } else {
                 //预测错了，放到逻辑回归再跑一次
                 double predict = logisticRegressionModel.predict(labeledPoint.features());
                 if (labeledPoint.label() == 1.0 && predict == 1.0) {
                     //TP
                     TP++;
-                }else if (labeledPoint.label() == 0.0 && predict == 0.0) {
+                } else if (labeledPoint.label() == 0.0 && predict == 0.0) {
                     TN++;
-                }else if (labeledPoint.label() == 1.0 && predictValue == 0.0) {
-                FP++;
-            } else if (labeledPoint.label() == 0.0 && predictValue == 1.0) {
-                FN++;
-            }
+                } else if (labeledPoint.label() == 1.0 && predictValue == 0.0) {
+                    FP++;
+                } else if (labeledPoint.label() == 0.0 && predictValue == 1.0) {
+                    FN++;
+                }
             }
             String type = "";
             if (labeledPoint.label() == 0.0) {
@@ -319,9 +319,9 @@ public class TFIDFNBLRService {
         DecimalFormat decimalFormat = new DecimalFormat("0.0000");
         DecimalFormat f1Format = new DecimalFormat("0.00");
         decimalFormat.setRoundingMode(RoundingMode.HALF_UP);
-        double accuracy = Double.valueOf(decimalFormat.format((double) (spamLabeledPointList_pre.size() - wrong) / spamLabeledPointList_pre.size()))*100;
-        double precision = Double.valueOf(decimalFormat.format(((double) TP / (TP + FP))))*100;
-        double recall = Double.valueOf(decimalFormat.format(((double) TP / (TP + FN))))*100;
+        double accuracy = Double.valueOf(decimalFormat.format((double) (spamLabeledPointList_pre.size() - wrong) / spamLabeledPointList_pre.size())) * 100;
+        double precision = Double.valueOf(decimalFormat.format(((double) TP / (TP + FP)))) * 100;
+        double recall = Double.valueOf(decimalFormat.format(((double) TP / (TP + FN)))) * 100;
         double F1 = Double.valueOf(f1Format.format((2 * precision * recall) / (precision + recall)));
         System.out.println("======================");
         System.out.println("预测完毕！一共预测" + spamLabeledPointList_pre.size() + "封邮件！\r\n" +

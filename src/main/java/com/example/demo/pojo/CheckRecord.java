@@ -23,7 +23,7 @@ public class CheckRecord {
     private String title;
     private String type;
     private String content;
-    @TableField(fill = FieldFill.INSERT)
+    @TableField(fill = FieldFill.INSERT_UPDATE)
     private Date checkTime;
 
     public CheckRecord() {

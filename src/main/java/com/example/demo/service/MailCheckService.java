@@ -15,6 +15,7 @@ public interface MailCheckService extends IService<CheckRecord> {
     Page<CheckRecord> getCheckRecordsPage(Integer currentPage, Integer limit, HttpSession session);
 
     CheckRecord getMailDetail(Integer id);
-
     int deleteRecord(Integer id);
+    int updateCheckRecord(String type, Integer mailId);
+
 }

@@ -71,4 +71,13 @@ public class MailCheckServiceImpl extends ServiceImpl<MailCheckMapper, CheckReco
         int result = mailCheckMapper.deleteById(id);
         return result;
     }
+
+    @Override
+    public int updateCheckRecord(String type, Integer mailId) {
+        CheckRecord checkRecord = new CheckRecord();
+        checkRecord.setId(mailId);
+        checkRecord.setType(type);
+        int result = mailCheckMapper.updateById(checkRecord);
+        return result;
+    }
 }

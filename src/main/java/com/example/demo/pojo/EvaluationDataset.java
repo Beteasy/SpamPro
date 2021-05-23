@@ -1,5 +1,7 @@
 package com.example.demo.pojo;
 
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.github.jeffreyning.mybatisplus.anno.MppMultiId;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,7 +17,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class EvaluationDataset {
+    @MppMultiId
+    @TableField(value = "id")
     private String id;  //数据集名称
+    @MppMultiId
+    @TableField(value = "algorithm")
+    private String algorithm;
     private Float accuracy;
     private Float pre;
     private Float recall;

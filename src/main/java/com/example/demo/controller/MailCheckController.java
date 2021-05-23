@@ -76,6 +76,18 @@ public class MailCheckController {
         return "redirect:/mailbox-main?currentPage=1&limit=5";
     }
 
+    //修改检测记录
+    @GetMapping(value = "/updateCheckRecord")
+    @ResponseBody
+    public Integer updateRecord(HttpServletRequest request){
+        //获取要修改的数据的ID和要修改的数据
+        String type = request.getParameter("type");
+        Integer mailId = Integer.valueOf(request.getParameter("mailId"));
+        int result = mailCheckService.updateCheckRecord(type, mailId);
+        //修改后刷新页面——还没实现，先重定向到第一页
+        return result;
+    }
+
 //
 //    @GetMapping(value = "/to-mailbox-main")
 //    public String toMailBoxMain

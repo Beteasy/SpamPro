@@ -47,16 +47,16 @@
 							<form method="post" role="form" th:action="@{/docheck}">
 
 								<!-- Header Title and Button Options -->
-								<div class="mail-header">
-									<div class="row">
-										<div class="col-sm-6">
-											<h3>
-												<i class="linecons-pencil"></i>
-												邮件检测
-											</h3>
-										</div>
-									</div>
-								</div>
+<!--								<div class="mail-header">-->
+<!--									<div class="row">-->
+<!--										<div class="col-sm-6">-->
+<!--											<h3>-->
+<!--												<i class="linecons-pencil"></i>-->
+<!--												邮件检测-->
+<!--											</h3>-->
+<!--										</div>-->
+<!--									</div>-->
+<!--								</div>-->
 
 								<div class="compose-message-editor">
 									<textarea class="form-control wysihtml5" data-html="false" data-color="false" data-stylesheet-url="/assets/css/wysihtml5-color.css" name="mailContent" id="mailContent"></textarea>
@@ -72,7 +72,10 @@
 									<span>检测</span>
 									</button>
 
+<!--									<a href="javascript:;" onclick="jQuery('#modal-4').modal('show', {backdrop: 'static'});" class="btn btn-primary btn-single btn-sm">Show Me</a>-->
+
 								</div>
+
 								<div class="col-sm-3">
 									<div style="margin-left: 60px;color: red" id="result"></div>
 								</div>
@@ -92,7 +95,8 @@
 													}else {
 														html += data;
 													}
-													$("#result").html(html);
+													jQuery('#modal-4').modal('show', {backdrop: 'static'});
+													$(".modal-body").html(html);
 												}
 											});
 										})
@@ -122,6 +126,26 @@
 		<!-- end: Chat Section -->
 		
 		
+	</div>
+
+	<!-- Modal 4 (Confirm)-->
+	<div class="modal fade" id="modal-4" data-backdrop="static">
+		<div class="modal-dialog">
+			<div class="modal-content">
+
+				<div class="modal-header">
+					<h4 class="modal-title">检测结果</h4>
+				</div>
+				<div class="modal-body">
+
+					没有接收到数据
+
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-info" data-dismiss="modal">确认</button>
+				</div>
+			</div>
+		</div>
 	</div>
 
 	<!-- Imported styles on this page -->

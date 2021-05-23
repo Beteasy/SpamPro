@@ -42,4 +42,28 @@ public class EvaluationDatasetController {
         evaluationDatasetService.trainAndPreDataTREC();
     }
 
+    @GetMapping(value = "/trainAndPreDataSMSTFIDFLR")
+    public void trainAndPreDataSMSTFIDFLR(){
+        evaluationDatasetService.trainAndPreDataSMSTFIDFLR();
+    }
+
+    @GetMapping(value = "/trainAndPreDataSMSTFIDFNB")
+    public void trainAndPreDataSMSTFIDFNB(){
+        evaluationDatasetService.trainAndPreDataSMSTFIDFNB();
+    }
+
+    @GetMapping(value = "/trainAndPreDataSMSTFNB")
+    public void trainAndPreDataSMSTFNB(){
+        evaluationDatasetService.trainAndPreDataSMSTFNB();
+    }
+
+    @GetMapping(value = "/trainAndPreDataSMSTFIDFSVMSGD")
+    public void trainAndPreDataSMSTFIDFSVMSGD(){
+        evaluationDatasetService.trainAndPreDataSMSTFIDFSVMSGD();
+    }
+
+    @GetMapping(value = "/trainAndPreDataSMSTFIDFNBLR")
+    public void trainAndPreDataSMSTFIDFNBLR(){
+        evaluationDatasetService.trainAndPreDataSMSTFIDFNBLR();
+    }
 }

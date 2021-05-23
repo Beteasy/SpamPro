@@ -22,6 +22,6 @@ public class DateHandler implements MetaObjectHandler {
 
     @Override
     public void updateFill(MetaObject metaObject) {
-
+        this.setFieldValByName("checkTime",new Date(),metaObject);
     }
 }
