@@ -319,7 +319,7 @@ public class TFIDFNBLRService {
         DecimalFormat decimalFormat = new DecimalFormat("0.0000");
         DecimalFormat f1Format = new DecimalFormat("0.00");
         decimalFormat.setRoundingMode(RoundingMode.HALF_UP);
-        double accuracy = Double.valueOf(decimalFormat.format((double) (spamLabeledPointList_pre.size() - wrong) / spamLabeledPointList_pre.size())) * 100;
+        double accuracy = Double.valueOf(decimalFormat.format((double) (TP+TN) / spamLabeledPointList_pre.size())) * 100;
         double precision = Double.valueOf(decimalFormat.format(((double) TP / (TP + FP)))) * 100;
         double recall = Double.valueOf(decimalFormat.format(((double) TP / (TP + FN)))) * 100;
         double F1 = Double.valueOf(f1Format.format((2 * precision * recall) / (precision + recall)));
@@ -338,21 +338,21 @@ public class TFIDFNBLRService {
         System.out.println("查准率 = " + precision);
         System.out.println("召回率 = " + recall);
         System.out.println("F1 = " + F1);
-        EvaluationAlgorithm evaluationAlgTable = new EvaluationAlgorithm();
-        evaluationAlgTable.setId("TFIDFNBLR");
-        evaluationAlgTable.setAccuracy((float) accuracy);
-        evaluationAlgTable.setPre((float) precision);
-        evaluationAlgTable.setRecall((float) recall);
-        evaluationAlgTable.setF1((float) F1);
-        evaluationAlgTable.setFn(FN);
-        evaluationAlgTable.setFp(FP);
-        evaluationAlgTable.setTn(TN);
-        evaluationAlgTable.setTp(TP);
-        evaluationAlgTable.setHamTag("ham");
-        evaluationAlgTable.setSpamTag("spam");
-        evaluationAlgTable.setTotalNumHam(HAM_NUM_PREDICT);
-        evaluationAlgTable.setTotalNumSpam(SPAM_NUM_PREDICT);
-        boolean b3 = evaluationAlgService.saveOrUpdate(evaluationAlgTable);
+//        EvaluationAlgorithm evaluationAlgTable = new EvaluationAlgorithm();
+//        evaluationAlgTable.setId("TFIDFNBLR");
+//        evaluationAlgTable.setAccuracy((float) accuracy);
+//        evaluationAlgTable.setPre((float) precision);
+//        evaluationAlgTable.setRecall((float) recall);
+//        evaluationAlgTable.setF1((float) F1);
+//        evaluationAlgTable.setFn(FN);
+//        evaluationAlgTable.setFp(FP);
+//        evaluationAlgTable.setTn(TN);
+//        evaluationAlgTable.setTp(TP);
+//        evaluationAlgTable.setHamTag("ham");
+//        evaluationAlgTable.setSpamTag("spam");
+//        evaluationAlgTable.setTotalNumHam(HAM_NUM_PREDICT);
+//        evaluationAlgTable.setTotalNumSpam(SPAM_NUM_PREDICT);
+//        boolean b3 = evaluationAlgService.saveOrUpdate(evaluationAlgTable);
         System.out.println("==========程序结束============");
 
     }

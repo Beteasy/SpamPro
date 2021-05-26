@@ -135,7 +135,7 @@
 								</td>
 								<td ><a th:utext="${checkRecord.title}" th:href="@{'/toMailDetail?id='+${checkRecord.id}}" style="color: #979898"></a></td>
 								<td th:text="${checkRecord.type}"></td>
-								<td th:with="time=${checkRecord.checkTime}" th:text="${#dates.format(time,'yyyy-MMM-dd HH:mm')}"></td>
+								<td th:with="time=${checkRecord.checkTime}" th:text="${#dates.format(time,'yyyy-MM-dd HH:mm')}"></td>
 <!--								,'yyyy-MMM-dd HH:mm'-->
 								<td>
 									<a href="javascript:;" th:onclick="'javascript:showAjaxModal(\''+${checkRecord.id}+'\')'" class="btn btn-secondary btn-sm btn-icon icon-left">
