@@ -19,10 +19,7 @@ import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @ClassName SpamPredict
@@ -50,10 +47,6 @@ public class SpamPredict {
     JavaSparkContext javaSparkContext;
 
     public  double textCheck(String str){
-//        //创建spark配置对象
-//        SparkConf conf = new SparkConf().setAppName("spam").setMaster("local[*]");
-//        //创建JavaSpark上下文对象
-//        JavaSparkContext javaSparkContext = new JavaSparkContext(conf);
         //获取持久化的Top200字符串
         StringBuffer stringBuffer = new StringBuffer();
         BufferedReader bufferedReader = null;
@@ -94,6 +87,11 @@ public class SpamPredict {
         NaiveBayesModel naiveBayesModel = NaiveBayesModel.load(javaSparkContext.sc(), MODEL_PATH);
         //通过模型对每一封email特征值列表进行预测
         double predict = naiveBayesModel.predict(testVec);
+        Vector vector = naiveBayesModel.predictProbabilities(testVec);
+        OptionalDouble max = Arrays.stream(vector.toArray()).max();
+        double maxAsDouble = max.getAsDouble();
+        System.out.println("predictProbabilities="+vector.argmax());
+        System.out.println(maxAsDouble);
         System.out.println("预测内容："+str);
         System.out.println("预测值:"+predict);
         if (predict == 1.0){

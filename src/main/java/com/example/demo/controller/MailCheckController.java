@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.demo.pojo.CheckRecord;
 import com.example.demo.service.SpamPredict;
+import com.example.demo.service.TFIDFNBLRPredict;
 import com.example.demo.service.impl.MailCheckServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,6 +24,9 @@ import java.util.List;
 public class MailCheckController {
     @Autowired
     SpamPredict spamPredict;
+
+    @Autowired
+    TFIDFNBLRPredict tfidfnblrPredict;
 
     @Autowired
     MailCheckServiceImpl mailCheckService;

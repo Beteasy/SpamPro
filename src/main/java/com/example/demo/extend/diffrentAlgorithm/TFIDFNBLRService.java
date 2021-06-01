@@ -1,19 +1,14 @@
 package com.example.demo.extend.diffrentAlgorithm;
 
-import com.example.demo.pojo.EvaluationAlgorithm;
-import com.example.demo.pojo.EvaluationDataset;
 import com.example.demo.service.impl.EvaluationAlgServiceImpl;
-import com.example.demo.service.impl.EvaluationDatasetServiceImpl;
-import com.example.demo.utils.HanlpProcess;
-import com.example.demo.utils.MyTFIDF;
-import com.example.demo.utils.ProcessFile;
-import com.example.demo.utils.RemoveStopWords;
+import com.example.demo.utils.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.mllib.classification.LogisticRegressionModel;
 import org.apache.spark.mllib.classification.LogisticRegressionWithLBFGS;
 import org.apache.spark.mllib.classification.NaiveBayes;
 import org.apache.spark.mllib.classification.NaiveBayesModel;
+import org.apache.spark.mllib.linalg.Vector;
 import org.apache.spark.mllib.linalg.Vectors;
 import org.apache.spark.mllib.regression.LabeledPoint;
 import org.apache.spark.rdd.RDD;
@@ -56,7 +51,7 @@ public class TFIDFNBLRService {
     //the number of ham used for predicting
     public static final Integer HAM_NUM_PREDICT = 3000;
     //特征数量
-    public static final Integer FEATURE_NUM = 200;
+    public static final Integer FEATURE_NUM = 190;
 
     @Autowired
     EvaluationAlgServiceImpl evaluationAlgService;
@@ -257,7 +252,7 @@ public class TFIDFNBLRService {
         ArrayList<ArrayList<String>> hamWords = HanlpProcess.cutWords(hamMailList_pre);
         System.out.println(hamWords);
         //对元数据列表进行特征匹配生成训练数据
-        System.out.println("**********************对元数据列表进行特征匹配生成训练数据********************");
+        System.out.println("**********************对元数据列表进行特征匹配生成测试数据********************");
         //1代表垃圾邮件，0代表正常邮件，要和文件对应
         ArrayList<LabeledPoint> spamLabeledPointList_pre = getTrainData(spamWords, allKeyWord, 1.0, FEATURE_NUM);
         ArrayList<LabeledPoint> hamLabeledPointList_pre = getTrainData(hamWords, allKeyWord, 0.0, FEATURE_NUM);
@@ -276,45 +271,67 @@ public class TFIDFNBLRService {
         int TN = 0;
         int FN = 0;
         for (LabeledPoint labeledPoint : spamLabeledPointList_pre) {
-            double predictValue = naiveBayesModel.predict(labeledPoint.features());
-//            double predict;
-            System.out.println("预测文件名为：" + fileNameList[index++]);
-            System.out.println("准确值:" + labeledPoint.label() + "\t预测值:" + predictValue);
-            //先用贝叶斯进行预测，预测对了就直接统计，预测不对放到逻辑回归中在做一次
-            if (labeledPoint.label() == predictValue) {
-                //预测对了
-                if (labeledPoint.label() == 1.0 && predictValue == 1.0) {
+            double predictNB = naiveBayesModel.predict(labeledPoint.features());
+            double predictLR = logisticRegressionModel.predict(labeledPoint.features());
+            if (predictLR == predictNB){
+                //如果两个的预测值一样，则可以直接确定结果
+                if (labeledPoint.label() == 1.0 && predictNB == 1.0) {
                     //TP
                     TP++;
-                } else if (labeledPoint.label() == 0.0 && predictValue == 0.0) {
+                } else if (labeledPoint.label() == 0.0 && predictNB == 0.0) {
                     TN++;
-                }
-            } else {
-                //预测错了，放到逻辑回归再跑一次
-                double predict = logisticRegressionModel.predict(labeledPoint.features());
-                if (labeledPoint.label() == 1.0 && predict == 1.0) {
-                    //TP
-                    TP++;
-                } else if (labeledPoint.label() == 0.0 && predict == 0.0) {
-                    TN++;
-                } else if (labeledPoint.label() == 1.0 && predictValue == 0.0) {
+                }else if (labeledPoint.label() == 1.0 && predictNB == 0.0) {
                     FP++;
-                } else if (labeledPoint.label() == 0.0 && predictValue == 1.0) {
+                } else if (labeledPoint.label() == 0.0 && predictNB == 1.0) {
                     FN++;
                 }
+
+            }else {
+//                如果两个的预测值不一样，则按照初始预测数值高的进行计算
+                Vector vectorNB = naiveBayesModel.predictProbabilities(labeledPoint.features());
+                double rawPreNB = Arrays.stream(vectorNB.toArray()).max().getAsDouble();
+                double rawPreLR = MyLogisticRegressionModel.predictPoint(labeledPoint.features(), logisticRegressionModel.weights(), logisticRegressionModel.intercept());
+                if (rawPreNB >= rawPreLR){
+                    //如果贝叶斯的更高，则结果按照贝叶斯的算
+                    if (labeledPoint.label() == 1.0 && predictNB == 1.0) {
+                        //TP
+                        TP++;
+                    } else if (labeledPoint.label() == 0.0 && predictNB == 0.0) {
+                        TN++;
+                    }else if (labeledPoint.label() == 1.0 && predictNB == 0.0) {
+                        FP++;
+                    } else if (labeledPoint.label() == 0.0 && predictNB == 1.0) {
+                        FN++;
+                    }
+                }else {
+                    //否则，按照逻辑回归的算
+                    if (labeledPoint.label() == 1.0 && predictLR == 1.0) {
+                        //TP
+                        TP++;
+                    } else if (labeledPoint.label() == 0.0 && predictLR == 0.0) {
+                        TN++;
+                    }else if (labeledPoint.label() == 1.0 && predictLR == 0.0) {
+                        FP++;
+                    } else if (labeledPoint.label() == 0.0 && predictLR == 1.0) {
+                        FN++;
+                    }
+                }
             }
-            String type = "";
-            if (labeledPoint.label() == 0.0) {
-                type = "正常邮件";
-            } else {
-                type = "垃圾邮件";
-            }
-            if (labeledPoint.label() == predictValue) {
-                System.out.println("该邮件为:" + type + "\t预测准确");
-            } else {
-                System.out.println("该邮件为:" + type + "\t预测错误");
-                wrong++;
-            }
+//            System.out.println("预测文件名为：" + fileNameList[index++]);
+//            System.out.println("准确值:" + labeledPoint.label() + "\t预测值:" + predictValue);
+//            String type = "";
+//            if (labeledPoint.label() == 0.0) {
+//                type = "正常邮件";
+//            } else {
+//                type = "垃圾邮件";
+//            }
+//            if (labeledPoint.label() == predictValue) {
+//                System.out.println("该邮件为:" + type + "\t预测准确");
+//            } else {
+//                System.out.println("该邮件为:" + type + "\t预测错误");
+//                wrong++;
+//            }
+
         }
         DecimalFormat decimalFormat = new DecimalFormat("0.0000");
         DecimalFormat f1Format = new DecimalFormat("0.00");

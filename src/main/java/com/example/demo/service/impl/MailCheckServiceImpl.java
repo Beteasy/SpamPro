@@ -8,6 +8,7 @@ import com.example.demo.pojo.CheckRecord;
 import com.example.demo.pojo.User;
 import com.example.demo.service.MailCheckService;
 import com.example.demo.service.SpamPredict;
+import com.example.demo.service.TFIDFNBLRPredict;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,13 +27,17 @@ public class MailCheckServiceImpl extends ServiceImpl<MailCheckMapper, CheckReco
 
     @Autowired
     SpamPredict spamPredict;
+
+    @Autowired
+    TFIDFNBLRPredict tfidfnblrPredict;
+
     @Autowired
     MailCheckMapper mailCheckMapper;
 
     @Override
     public double checkMail(String mailContent, HttpSession session) {
         //进行检测
-        double result = spamPredict.textCheck(mailContent);
+        double result = tfidfnblrPredict.checkMail(mailContent);
         //将检测结果写到数据库
         CheckRecord checkRecord = new CheckRecord();
         User user = (User) session.getAttribute("user");

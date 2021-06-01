@@ -1,15 +1,14 @@
 package com.example.demo.extend.diffrentAlgorithm;
 
-import com.example.demo.pojo.EvaluationAlgorithm;
-import com.example.demo.pojo.EvaluationDataset;
 import com.example.demo.service.impl.EvaluationAlgServiceImpl;
-import com.example.demo.service.impl.EvaluationDatasetServiceImpl;
 import com.example.demo.utils.HanlpProcess;
 import com.example.demo.utils.MyTFIDF;
 import com.example.demo.utils.ProcessFile;
 import com.example.demo.utils.RemoveStopWords;
 import org.apache.commons.io.FileUtils;
 import org.apache.spark.api.java.JavaSparkContext;
+import org.apache.spark.mllib.classification.LogisticRegressionModel;
+import org.apache.spark.mllib.classification.LogisticRegressionWithLBFGS;
 import org.apache.spark.mllib.classification.NaiveBayes;
 import org.apache.spark.mllib.classification.NaiveBayesModel;
 import org.apache.spark.mllib.linalg.Vectors;
@@ -25,6 +24,7 @@ import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.*;
 
+;
 
 /**
  * @ClassName LogisticRegressionService
@@ -34,14 +34,15 @@ import java.util.*;
  */
 
 @Service
-public class TFIDFNBService {
+public class TFIDFNBLRService_bk {
 
     //the path of index file
     //fowling paths need to be modified if run on linux
     public static final String FULL_PATH = "E:\\FinalProject\\datasets\\trec06c\\full\\index_train";
     public static final String FULL_PATH_PRE = "E:\\FinalProject\\datasets\\trec06c\\full\\index_pre";
     public static final String DATA_PRE_PATH = "E:\\FinalProject\\datasets\\trec06c";
-    public static final String MODEL_PATH = "E:\\FinalProject\\models\\AlgorithmModels\\TFIDFNB";
+    public static final String MODEL_PATH_NB = "E:\\FinalProject\\models\\AlgorithmModels\\TFIDFNBLR\\NB";
+    public static final String MODEL_PATH_LR = "E:\\FinalProject\\models\\AlgorithmModels\\TFIDFNBLR\\LR";
     public static final String TOP2N_PATH = "E:\\FinalProject\\datasets\\trec06c\\spam_java.txt";
     //the number of spam used for training
     public static final Integer SPAM_NUM_TRAIN = 3000;
@@ -52,12 +53,10 @@ public class TFIDFNBService {
     //the number of ham used for predicting
     public static final Integer HAM_NUM_PREDICT = 3000;
     //特征数量
-    public static final Integer FEATURE_NUM = 190;
+    public static final Integer FEATURE_NUM = 200;
 
     @Autowired
     EvaluationAlgServiceImpl evaluationAlgService;
-    @Autowired
-    EvaluationDatasetServiceImpl evaluationDatasetService;
 
     @Autowired
     JavaSparkContext javaSparkContext;
@@ -137,17 +136,17 @@ public class TFIDFNBService {
         List<String> spamTopN = new ArrayList<>();
         List<String> hamTopN = new ArrayList<>();
         //选100个TF-IDF最大的出来
-        for(Map.Entry<String,Float> m : hamList){
+        for (Map.Entry<String, Float> m : hamList) {
 //            System.out.println(m.getKey()+"="+m.getValue());
             hamTopN.add(m.getKey());
-            if (hamTopN.size()==FEATURE_NUM/2){
+            if (hamTopN.size() == FEATURE_NUM / 2) {
                 break;
             }
         }
-        for(Map.Entry<String,Float> m : spamList){
+        for (Map.Entry<String, Float> m : spamList) {
 //            System.out.println(m.getKey()+"="+m.getValue());
             spamTopN.add(m.getKey());
-            if (spamTopN.size()==FEATURE_NUM/2){
+            if (spamTopN.size() == FEATURE_NUM / 2) {
                 break;
             }
         }
@@ -187,11 +186,15 @@ public class TFIDFNBService {
         RDD<LabeledPoint> trainRDD = javaSparkContext.parallelize(spamLabeledPointList).rdd();
         // 数据训练生成模型
         System.out.println("**********************训练模型********************");
-        NaiveBayesModel model = NaiveBayes.train(trainRDD);
+        NaiveBayesModel modelNB = NaiveBayes.train(trainRDD);
+        LogisticRegressionWithLBFGS logisticRegressionWithLBFGS = new LogisticRegressionWithLBFGS();
+        LogisticRegressionModel modelLR = logisticRegressionWithLBFGS.setNumClasses(2).run(trainRDD);
         System.out.println("**********************持久化模型********************");
         //源目录不能存在文件，否则保存错误，先删除，再保存
-        boolean b = FileUtils.deleteQuietly(new File(MODEL_PATH));
-        model.save(javaSparkContext.sc(), MODEL_PATH);
+        boolean b = FileUtils.deleteQuietly(new File(MODEL_PATH_NB));
+        modelNB.save(javaSparkContext.sc(), MODEL_PATH_NB);
+        boolean b2 = FileUtils.deleteQuietly(new File(MODEL_PATH_LR));
+        modelLR.save(javaSparkContext.sc(), MODEL_PATH_LR);
 
         //进行预测预评估
         //获取垃圾邮件和正常邮件，并放入列表中
@@ -251,16 +254,17 @@ public class TFIDFNBService {
         ArrayList<ArrayList<String>> hamWords = HanlpProcess.cutWords(hamMailList_pre);
         System.out.println(hamWords);
         //对元数据列表进行特征匹配生成训练数据
-        System.out.println("**********************对元数据列表进行特征匹配生成训练数据********************");
+        System.out.println("**********************对元数据列表进行特征匹配生成测试数据********************");
         //1代表垃圾邮件，0代表正常邮件，要和文件对应
         ArrayList<LabeledPoint> spamLabeledPointList_pre = getTrainData(spamWords, allKeyWord, 1.0, FEATURE_NUM);
         ArrayList<LabeledPoint> hamLabeledPointList_pre = getTrainData(hamWords, allKeyWord, 0.0, FEATURE_NUM);
         spamLabeledPointList_pre.addAll(hamLabeledPointList_pre);
         // 将测试数据转化为rdd
-        RDD<LabeledPoint> preRDD = javaSparkContext.parallelize(spamLabeledPointList_pre).rdd();
+//        RDD<LabeledPoint> preRDD = javaSparkContext.parallelize(spamLabeledPointList_pre).rdd();
         //加载持久化的训练模型
         System.out.println("********************正在加载模型************************");
-        NaiveBayesModel naiveBayesModel = NaiveBayesModel.load(javaSparkContext.sc(), MODEL_PATH);
+        NaiveBayesModel naiveBayesModel = NaiveBayesModel.load(javaSparkContext.sc(), MODEL_PATH_NB);
+        LogisticRegressionModel logisticRegressionModel = LogisticRegressionModel.load(javaSparkContext.sc(), MODEL_PATH_LR);
         //通过模型对每一封email特征值列表进行预测
         int index = 0;
         int wrong = 0;
@@ -270,17 +274,31 @@ public class TFIDFNBService {
         int FN = 0;
         for (LabeledPoint labeledPoint : spamLabeledPointList_pre) {
             double predictValue = naiveBayesModel.predict(labeledPoint.features());
+//            double predict;
             System.out.println("预测文件名为：" + fileNameList[index++]);
             System.out.println("准确值:" + labeledPoint.label() + "\t预测值:" + predictValue);
-            if (labeledPoint.label() == 1.0 && predictValue == 1.0) {
-                //TP
-                TP++;
-            } else if (labeledPoint.label() == 1.0 && predictValue == 0.0) {
-                FP++;
-            } else if (labeledPoint.label() == 0.0 && predictValue == 0.0) {
-                TN++;
-            } else if (labeledPoint.label() == 0.0 && predictValue == 1.0) {
-                FN++;
+            //先用贝叶斯进行预测，预测对了就直接统计，预测不对放到逻辑回归中在做一次
+            if (labeledPoint.label() == predictValue) {
+                //预测对了
+                if (labeledPoint.label() == 1.0 && predictValue == 1.0) {
+                    //TP
+                    TP++;
+                } else if (labeledPoint.label() == 0.0 && predictValue == 0.0) {
+                    TN++;
+                }
+            } else {
+                //预测错了，放到逻辑回归再跑一次
+                double predict = logisticRegressionModel.predict(labeledPoint.features());
+                if (labeledPoint.label() == 1.0 && predict == 1.0) {
+                    //TP
+                    TP++;
+                } else if (labeledPoint.label() == 0.0 && predict == 0.0) {
+                    TN++;
+                } else if (labeledPoint.label() == 1.0 && predictValue == 0.0) {
+                    FP++;
+                } else if (labeledPoint.label() == 0.0 && predictValue == 1.0) {
+                    FN++;
+                }
             }
             String type = "";
             if (labeledPoint.label() == 0.0) {
@@ -294,13 +312,14 @@ public class TFIDFNBService {
                 System.out.println("该邮件为:" + type + "\t预测错误");
                 wrong++;
             }
+
         }
         DecimalFormat decimalFormat = new DecimalFormat("0.0000");
         DecimalFormat f1Format = new DecimalFormat("0.00");
         decimalFormat.setRoundingMode(RoundingMode.HALF_UP);
-        double accuracy = Double.valueOf(decimalFormat.format((double) (spamLabeledPointList_pre.size() - wrong) / spamLabeledPointList_pre.size()))*100;
-        double precision = Double.valueOf(decimalFormat.format(((double) TP / (TP + FP))))*100;
-        double recall = Double.valueOf(decimalFormat.format(((double) TP / (TP + FN))))*100;
+        double accuracy = Double.valueOf(decimalFormat.format((double) (TP+TN) / spamLabeledPointList_pre.size())) * 100;
+        double precision = Double.valueOf(decimalFormat.format(((double) TP / (TP + FP)))) * 100;
+        double recall = Double.valueOf(decimalFormat.format(((double) TP / (TP + FN)))) * 100;
         double F1 = Double.valueOf(f1Format.format((2 * precision * recall) / (precision + recall)));
         System.out.println("======================");
         System.out.println("预测完毕！一共预测" + spamLabeledPointList_pre.size() + "封邮件！\r\n" +
@@ -317,31 +336,21 @@ public class TFIDFNBService {
         System.out.println("查准率 = " + precision);
         System.out.println("召回率 = " + recall);
         System.out.println("F1 = " + F1);
-        EvaluationAlgorithm evaluationAlgTable = new EvaluationAlgorithm();
-        evaluationAlgTable.setId("TFIDFNB");
-        evaluationAlgTable.setAccuracy((float) accuracy);
-        evaluationAlgTable.setPre((float) precision);
-        evaluationAlgTable.setRecall((float) recall);
-        evaluationAlgTable.setF1((float) F1);
-        evaluationAlgTable.setFn(FN);
-        evaluationAlgTable.setFp(FP);
-        evaluationAlgTable.setTn(TN);
-        evaluationAlgTable.setTp(TP);
-        evaluationAlgTable.setHamTag("ham");
-        evaluationAlgTable.setSpamTag("spam");
-        evaluationAlgTable.setTotalNumHam(HAM_NUM_PREDICT);
-        evaluationAlgTable.setTotalNumSpam(SPAM_NUM_PREDICT);
-        boolean b2 = evaluationAlgService.saveOrUpdate(evaluationAlgTable);
-
-
-        /*********************同时把数据集的也更新了******************************/
-        EvaluationDataset evaluationDataset = new EvaluationDataset();
-        evaluationDataset.setId("SMS");
-        evaluationDataset.setAccuracy((float) accuracy);
-        evaluationDataset.setPre((float) precision);
-        evaluationDataset.setRecall((float) recall);
-        evaluationDataset.setF1((float) F1);
-        boolean b3 = evaluationDatasetService.saveOrUpdate(evaluationDataset);
+//        EvaluationAlgorithm evaluationAlgTable = new EvaluationAlgorithm();
+//        evaluationAlgTable.setId("TFIDFNBLR");
+//        evaluationAlgTable.setAccuracy((float) accuracy);
+//        evaluationAlgTable.setPre((float) precision);
+//        evaluationAlgTable.setRecall((float) recall);
+//        evaluationAlgTable.setF1((float) F1);
+//        evaluationAlgTable.setFn(FN);
+//        evaluationAlgTable.setFp(FP);
+//        evaluationAlgTable.setTn(TN);
+//        evaluationAlgTable.setTp(TP);
+//        evaluationAlgTable.setHamTag("ham");
+//        evaluationAlgTable.setSpamTag("spam");
+//        evaluationAlgTable.setTotalNumHam(HAM_NUM_PREDICT);
+//        evaluationAlgTable.setTotalNumSpam(SPAM_NUM_PREDICT);
+//        boolean b3 = evaluationAlgService.saveOrUpdate(evaluationAlgTable);
         System.out.println("==========程序结束============");
 
     }
