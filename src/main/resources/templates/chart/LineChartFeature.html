@@ -59,7 +59,6 @@
                 var dataArr = new Array();
                 dataArr.push(['特征数量', '准确率', '查准率', '召回率', 'F1-Score']);
                 for (let dataKey in data) {
-                    // console.log(data[dataKey].id)
                     var tmp = [data[dataKey].id,data[dataKey].accuracy,data[dataKey].pre,data[dataKey].recall,data[dataKey].f1];
                     dataArr.push(tmp);
                 }
@@ -92,55 +91,24 @@
                     xAxis: {
                         type: 'category',
                         boundaryGap: false,
-                        // data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
                     },
                     yAxis: {
                         type: 'value',
-                        // scala: true,
                         min: 60
                     },
                     series: [
                         {
-
                             type: 'line',
-                            // itemStyle: {
-                            //     normal: {
-                            //         label: {
-                            //             show: true, //开启显示
-                            //             position: 'top', //在上方显示
-                            //             textStyle: { //数值样式
-                            //                 color: 'black',
-                            //                 fontSize: 16
-                            //             }
-                            //         }
-                            //     }
-                            // }
-
                         },
                         {
-
                             type: 'line',
-                            // stack: '总量',
-                            // data: [220, 182, 191, 234, 290, 330, 310]
                         },
                         {
-                            // name: '视频广告',
                             type: 'line',
-                            // stack: '总量',
-                            // data: [150, 232, 201, 154, 190, 330, 410]
                         },
                         {
-                            // name: '直接访问',
                             type: 'line',
-                            // stack: '总量',
-                            // data: [320, 332, 301, 334, 390, 330, 320]
                         },
-                        // {
-                        //     // name: '搜索引擎',
-                        //     type: 'line',
-                        //     // stack: '总量',
-                        //     // data: [820, 932, 901, 934, 1290, 1330, 1320]
-                        // }
                     ]
                 };
 

@@ -31,11 +31,4 @@ public class TablesController {
         return "table/tableDiffAlgorithm";
     }
 
-//    @GetMapping(value = "/evaluationAlgTable")
-//    public String getAlgEvaluations(Model model){
-//        List<EvaluationAlgorithm> evaluationAlgorithms = evaluationAlgService.getAlgEvaluations();
-//        model.addAttribute("evaluationAlgorithms",evaluationAlgorithms);
-//        return "table/tableDiffAlgorithm";
-//    }
-
 }

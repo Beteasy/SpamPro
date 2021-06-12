@@ -2,7 +2,6 @@ package com.example.demo.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.demo.pojo.CheckRecord;
-import com.example.demo.service.SpamPredict;
 import com.example.demo.service.TFIDFNBLRPredict;
 import com.example.demo.service.impl.MailCheckServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,21 +22,10 @@ import java.util.List;
 @Controller
 public class MailCheckController {
     @Autowired
-    SpamPredict spamPredict;
-
-    @Autowired
     TFIDFNBLRPredict tfidfnblrPredict;
 
     @Autowired
     MailCheckServiceImpl mailCheckService;
-
-//
-//    @GetMapping(value = {"/mailbox-compose"})
-//    public String oneMailCheckPage(){
-//        return "mailbox/mailbox-compose";
-//    }
-
-
 
     @PostMapping(value = "/docheck")
     @ResponseBody
@@ -92,7 +80,4 @@ public class MailCheckController {
         return result;
     }
 
-//
-//    @GetMapping(value = "/to-mailbox-main")
-//    public String toMailBoxMain
 }

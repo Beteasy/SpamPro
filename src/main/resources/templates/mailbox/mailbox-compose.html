@@ -8,20 +8,15 @@
 	<meta name="description" content="Xenon Boostrap Admin Panel" />
 	<meta name="author" content="" />
 	
-	<title>Xenon - Compose Message</title>
+	<title>邮件检测</title>
 
 	<div th:replace="common/common :: commonHeader"></div>
 
 </head>
 <body class="page-body">
 
-	<div th:replace="common/common :: settings-pane"></div>
-	
-	<div class="page-container"><!-- add class "sidebar-collapsed" to close sidebar by default, "chat-visible" to make chat appear always -->
-			
-		<!-- Add "fixed" class to make the sidebar fixed always to the browser viewport. -->
-		<!-- Adding class "toggle-others" will keep only one menu item open at a time. -->
-		<!-- Adding class "collapsed" collapse sidebar root elements and show only icons. -->
+	<div class="page-container">
+
 		<div th:replace="common/common :: sidebar-menu"></div>
 		
 		<div class="main-content">
@@ -39,31 +34,16 @@
 
 				<div class="row">
 
-					<!-- Compose Email Form -->
+					<!-- 邮件内容输入框 -->
 					<div class="col-sm-9 mailbox-center">
 
 						<div class="mail-compose">
 
 							<form method="post" role="form" th:action="@{/docheck}">
-
-								<!-- Header Title and Button Options -->
-<!--								<div class="mail-header">-->
-<!--									<div class="row">-->
-<!--										<div class="col-sm-6">-->
-<!--											<h3>-->
-<!--												<i class="linecons-pencil"></i>-->
-<!--												邮件检测-->
-<!--											</h3>-->
-<!--										</div>-->
-<!--									</div>-->
-<!--								</div>-->
-
 								<div class="compose-message-editor">
 									<textarea class="form-control wysihtml5" data-html="false" data-color="false" data-stylesheet-url="/assets/css/wysihtml5-color.css" name="mailContent" id="mailContent"></textarea>
 								</div>
-
 <!--								原来这里是检测按钮，放到外面去-->
-
 							</form>
 							<div class="row">
 								<div class="col-sm-3">
@@ -71,9 +51,6 @@
 									<i class="linecons-mail"></i>
 									<span>检测</span>
 									</button>
-
-<!--									<a href="javascript:;" onclick="jQuery('#modal-4').modal('show', {backdrop: 'static'});" class="btn btn-primary btn-single btn-sm">Show Me</a>-->
-
 								</div>
 
 								<div class="col-sm-3">
@@ -103,29 +80,12 @@
 									})
 								</script>
 							</div>
-
 						</div>
-
-
 					</div>
-
-
 				</div>
 
 			</section>
-			<!-- Main Footer -->
-			<!-- Choose between footer styles: "footer-type-1" or "footer-type-2" -->
-			<!-- Add class "sticky" to  always stick the footer to the end of page (if page contents is small) -->
-			<!-- Or class "fixed" to  always fix the footer to the end of page -->
-			<div th:replace="common/common :: main-footer"></div>
 		</div>
-		
-			
-		<!-- start: Chat Section -->
-		<div th:replace="common/common :: chat"></div>
-		<!-- end: Chat Section -->
-		
-		
 	</div>
 
 	<!-- Modal 4 (Confirm)-->
@@ -156,7 +116,6 @@
 
 	<!-- Imported scripts on this page -->
 	<script src="/assets/js/wysihtml5/src/bootstrap-wysihtml5.js"></script>
-
 
 </body>
 </html>

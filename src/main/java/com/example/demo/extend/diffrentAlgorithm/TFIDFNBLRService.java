@@ -427,25 +427,4 @@ public class TFIDFNBLRService {
         return featureBox;
     }
 
-    private static ArrayList<double[]> getCharacter(ArrayList<String> strList, List<String> keyList, Integer featureNum) {
-        //实例化装载容器
-        ArrayList<double[]> characterNumList = new ArrayList<double[]>();
-        //对每一条源数据进行分词对比，生成特征值数组，然后装载进列表容器
-        ArrayList<ArrayList<String>> cutList = HanlpProcess.cutWords(strList);
-        int i = 0;
-        for (ArrayList<String> eachMail : cutList) {
-            System.out.println("********正在对第" + (i++) + "封邮件生成特征值列表*********");
-            System.out.println(eachMail);
-            double[] keyNum = new double[featureNum];
-            for (String s : eachMail) {
-                if (keyList.contains(s)) {
-                    int index = keyList.indexOf(s);
-                    keyNum[index] = 1.0;
-                }
-            }
-            characterNumList.add(keyNum);
-        }
-        return characterNumList;
-    }
-
 }

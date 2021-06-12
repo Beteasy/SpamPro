@@ -42,10 +42,6 @@ public class EvaluationAlgController {
         evaluationAlgService.trainAndPreLR();
     }
 
-    @GetMapping(value = "/decisionTreeClassifier")
-    public void trainAndPreDT(){
-        evaluationAlgService.trainAndPreDT();
-    }
 
     @GetMapping(value = "/tfIdfWeight")
     public void trainAndPreTFIDFNBWeight(){

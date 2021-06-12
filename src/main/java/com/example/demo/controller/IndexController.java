@@ -41,7 +41,7 @@ public class IndexController {
             return "mailbox/mailbox-compose";
         }else {
             model.addAttribute("msg","请先登录");
-            return "/login";
+            return "/signup";
         }
 
     }

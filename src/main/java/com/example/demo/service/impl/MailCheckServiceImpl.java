@@ -7,13 +7,11 @@ import com.example.demo.mapper.MailCheckMapper;
 import com.example.demo.pojo.CheckRecord;
 import com.example.demo.pojo.User;
 import com.example.demo.service.MailCheckService;
-import com.example.demo.service.SpamPredict;
 import com.example.demo.service.TFIDFNBLRPredict;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpSession;
-import java.util.List;
 
 /**
  * @ClassName MailCheckServiceImpl
@@ -24,10 +22,6 @@ import java.util.List;
 
 @Service
 public class MailCheckServiceImpl extends ServiceImpl<MailCheckMapper, CheckRecord> implements MailCheckService {
-
-    @Autowired
-    SpamPredict spamPredict;
-
     @Autowired
     TFIDFNBLRPredict tfidfnblrPredict;
 

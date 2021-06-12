@@ -37,7 +37,6 @@ public class UserController {
             session.setAttribute("user", user);
             return "redirect:/mailbox-compose";
         } else {
-//            model.addAttribute("msg","用户名或密码错误");
             session.setAttribute("msg", "用户名或密码错误");
             return "redirect:/login";
         }

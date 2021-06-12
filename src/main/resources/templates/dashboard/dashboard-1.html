@@ -8,21 +8,16 @@
 	<meta name="description" content="Xenon Boostrap Admin Panel" />
 	<meta name="author" content="" />
 	
-	<title>Xenon - Dashboard</title>
+	<title>模型指标展示</title>
 
 	<div th:replace="common/common :: commonHeader"></div>
 	<script src="https://cdn.bootcdn.net/ajax/libs/echarts/5.1.0/echarts.js"></script>
 
-	
 </head>
 <body class="page-body">
 
+	<div class="page-container">
 
-	<div class="page-container"><!-- add class "sidebar-collapsed" to close sidebar by default, "chat-visible" to make chat appear always -->
-
-		<!-- Add "fixed" class to make the sidebar fixed always to the browser viewport. -->
-		<!-- Adding class "toggle-others" will keep only one menu item open at a time. -->
-		<!-- Adding class "collapsed" collapse sidebar root elements and show only icons. -->
 		<div th:replace="common/common :: sidebar-menu"></div>
 
 		<div class="main-content">
@@ -62,25 +57,16 @@
 				}
 			</script>
 
-
-			<!-- Main Footer -->
-			<!-- Choose between footer styles: "footer-type-1" or "footer-type-2" -->
-			<!-- Add class "sticky" to  always stick the footer to the end of page (if page contents is small) -->
-			<!-- Or class "fixed" to  always fix the footer to the end of page -->
-			<div th:replace="common/common :: main-footer"></div>
 		</div>
 
 	</div>
 
-
 	<div class="page-loading-overlay">
 		<div class="loader-2"></div>
 	</div>
-	
 
 	<!-- Bottom Scripts -->
 	<div th:replace="common/common :: commonScript"></div>
-
 
 	<!-- Imported scripts on this page -->
 	<script th:src="@{/assets/js/xenon-widgets.js}"></script>

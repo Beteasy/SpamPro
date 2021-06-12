@@ -272,14 +272,14 @@ public class TFIDFNBLR_SMS {
         DecimalFormat decimalFormat = new DecimalFormat("0.0000");
         DecimalFormat F1Format = new DecimalFormat("0.00");
         decimalFormat.setRoundingMode(RoundingMode.HALF_UP);
-        double accuracy = Double.valueOf(decimalFormat.format((double) (spamLabeledPointList_pre.size() - wrong) / spamLabeledPointList_pre.size()))*100;
+        double accuracy = Double.valueOf(decimalFormat.format((double) (TP+TN) / spamLabeledPointList_pre.size()))*100;
         double precision = Double.valueOf(decimalFormat.format(((double) TP / (TP + FP))))*100;
         double recall = Double.valueOf(decimalFormat.format(((double) TP / (TP + FN))))*100;
         double F1 = Double.valueOf(F1Format.format((2 * precision * recall) / (precision + recall)));
         System.out.println("======================");
         System.out.println("预测完毕！一共预测" + spamLabeledPointList_pre.size() + "封邮件！\r\n" +
-                "预测准确：" + (spamLabeledPointList_pre.size() - wrong) + "封邮件！\r\n" +
-                "预测错误：" + wrong + "封邮件！\r\n" +
+//                "预测准确：" + (spamLabeledPointList_pre.size() - wrong) + "封邮件！\r\n" +
+//                "预测错误：" + wrong + "封邮件！\r\n" +
                 "预测准确率为：" + accuracy + "！\r\n"
         );
         System.out.println("TP = " + TP);

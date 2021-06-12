@@ -8,7 +8,7 @@
 	<meta name="description" content="Xenon Boostrap Admin Panel" />
 	<meta name="author" content="" />
 	
-	<title>Xenon - Mailbox</title>
+	<title>邮件检测记录</title>
 
 	<div th:replace="common/common :: commonHeader"></div>
 	
@@ -16,13 +16,7 @@
 </head>
 <body class="page-body">
 
-	<div th:replace="common/common :: settings-pane"></div>
-	
-	<div class="page-container"><!-- add class "sidebar-collapsed" to close sidebar by default, "chat-visible" to make chat appear always -->
-			
-		<!-- Add "fixed" class to make the sidebar fixed always to the browser viewport. -->
-		<!-- Adding class "toggle-others" will keep only one menu item open at a time. -->
-		<!-- Adding class "collapsed" collapse sidebar root elements and show only icons. -->
+	<div class="page-container">
 		<div th:replace="common/common :: sidebar-menu"></div>
 		
 		<div class="main-content">
@@ -35,92 +29,14 @@
 					<h1 class="title">检测记录</h1>
 					<p class="description">邮件检测历史记录</p>
 				</div>
-				
-<!--					<div class="breadcrumb-env">-->
-<!--					-->
-<!--								<ol class="breadcrumb bc-1">-->
-<!--									<li>-->
-<!--							<a href="../templates/dashboard-1.html"><i class="fa-home"></i>Home</a>-->
-<!--						</li>-->
-<!--								<li>-->
-<!--						-->
-<!--										<a href="mailbox-main.html">Mailbox</a>-->
-<!--								</li>-->
-<!--							<li class="active">-->
-<!--						-->
-<!--										<strong>Inbox</strong>-->
-<!--								</li>-->
-<!--								</ol>-->
-<!--								-->
-<!--				</div>-->
-					
 			</div>
 			
 			<section class="mailbox-env">
 				<div class="panel panel-default">
-<!--					<div class="panel-heading">-->
-<!--						<h3 class="panel-title">Removing search and results count filter</h3>-->
-
-<!--						<div class="panel-options">-->
-<!--							<a href="#" data-toggle="panel">-->
-<!--								<span class="collapse-icon">&ndash;</span>-->
-<!--								<span class="expand-icon">+</span>-->
-<!--							</a>-->
-<!--							<a href="#" data-toggle="remove">-->
-<!--								&times;-->
-<!--							</a>-->
-<!--						</div>-->
-<!--					</div>-->
 					<div class="panel-body">
-
-						<script type="text/javascript">
-							jQuery(document).ready(function($)
-							{
-								$("#example-2").dataTable({
-									dom: "t" + "<'row'<'col-xs-6'i><'col-xs-6'p>>",
-									aoColumns: [
-										{bSortable: false},
-										null,
-										null,
-										null,
-										null
-									],
-								});
-
-								// Replace checkboxes when they appear
-								var $state = $("#example-2 thead input[type='checkbox']");
-
-								$("#example-2").on('draw.dt', function()
-								{
-									cbr_replace();
-
-									$state.trigger('change');
-								});
-
-								// Script to select all checkboxes
-								$state.on('change', function(ev)
-								{
-									var $chcks = $("#example-2 tbody input[type='checkbox']");
-
-									if($state.is(':checked'))
-									{
-										$chcks.prop('checked', true).trigger('change');
-									}
-									else
-									{
-										$chcks.prop('checked', false).trigger('change');
-									}
-								});
-							});
-						</script>
-
 						<table class="table table-bordered table-striped" id="example-2">
 							<thead>
 							<tr>
-								<th class="no-sorting">
-<!--									<input type="checkbox" class="cbr">-->
-								</th>
-<!--								<th>编号</th>-->
 								<th>标题</th>
 								<th>类型</th>
 								<th>检查时间</th>
@@ -130,13 +46,9 @@
 							<tbody class="middle-align">
 
 							<tr th:each="checkRecord:${checkRecords}">
-								<td>
-									<input type="checkbox" class="cbr">
-								</td>
 								<td ><a th:utext="${checkRecord.title}" th:href="@{'/toMailDetail?id='+${checkRecord.id}}" style="color: #979898"></a></td>
 								<td th:text="${checkRecord.type}"></td>
 								<td th:with="time=${checkRecord.checkTime}" th:text="${#dates.format(time,'yyyy-MM-dd HH:mm')}"></td>
-<!--								,'yyyy-MMM-dd HH:mm'-->
 								<td>
 									<a href="javascript:;" th:onclick="'javascript:showAjaxModal(\''+${checkRecord.id}+'\')'" class="btn btn-secondary btn-sm btn-icon icon-left">
 										修改
@@ -160,21 +72,8 @@
 						</div>
 					</div>
 				</div>
-
 			</section>
-			<!-- Main Footer -->
-			<!-- Choose between footer styles: "footer-type-1" or "footer-type-2" -->
-			<!-- Add class "sticky" to  always stick the footer to the end of page (if page contents is small) -->
-			<!-- Or class "fixed" to  always fix the footer to the end of page -->
-			<div th:replace="common/common :: main-footer"></div>
 		</div>
-		
-			
-		<!-- start: Chat Section -->
-		<div th:replace="common/common :: chat"></div>
-		<!-- end: Chat Section -->
-		
-		
 	</div>
 
 	<!-- Modal 7 (Ajax Modal)-->
@@ -241,11 +140,6 @@
 			})
 		}
 	</script>
-	
-	
-	
-
-
 
 	<!-- Bottom Scripts -->
 	<!-- JavaScripts initializations and stuff -->
